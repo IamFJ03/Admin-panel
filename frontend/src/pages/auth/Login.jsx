@@ -1,32 +1,46 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
     const handleSubmit = async () => {
-    try {
-        const res = await fetch("http://127.0.0.1:8000/api/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                password
-            })
-        });
+        try {
+            const res = await fetch("http://127.0.0.1:8000/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            });
 
-        const text = await res.text();
-        console.log("RAW RESPONSE:", text);
+            const data = await res.json();
 
-        const data = JSON.parse(text);
-        console.log(data);
-
-    } catch (error) {
-        console.error("Error:", error);
-    }
-};
+            if (!res.ok) {
+                if (data.errors) {
+                    if (data.errors.email) toast.error(data.errors.email);
+                    else toast.error(data.errors.password);
+                }
+                else {
+                    console.log("Error", data.message);
+                    toast.error(data.message);
+                }
+            }
+            if (data.message === "User Exists") {
+                console.log("Login Successfull", data.user);
+                toast.success("Login Succesfull");
+                navigate("/admin-dashboard");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
     return (
         <div className='relative flex justify-center items-center w-screen h-screen bg-linear-to-r from-gray-200 to-white'>
             <div className='flex-col relative rounded-xl shadow-[-10px_10px_30px_rgba(0,0,0,0.5)] px-15 py-10 z-100 bg-white'>

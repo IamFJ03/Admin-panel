@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import toast from 'react-hot-toast';
 
 export default function SignUp() {
     const [name, setName] = useState("");
@@ -8,21 +9,42 @@ export default function SignUp() {
     const [cnfPassword, setCnfPassword] = useState("");
 
     const handleSubmit = async () => {
-        try{
-            const res = await fetch("http:127.0.0.1:8000/api/register",{
-                method:"POST",
-                headers:{
-                    "Content-Type": "application/json"
+        try {
+            if (password !== cnfPassword) {
+                toast.error("password must match")
+                return;
+            }
+            const res = await fetch("http://127.0.0.1:8000/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
                 },
                 body: JSON.stringify({
                     name,
                     email,
                     password
-                });
-            })
-        }
-        catch(e){
+                })
+            });
 
+            const data = await res.json();
+            if (!res.ok) {
+                if (data.errors) {
+                    if (data.errors.name) toast.error(data.errors.name);
+                    else if (data.errors.email) toast.error(data.errors.email);
+                    else toast.error(data.errors.password);
+                    return;
+                }
+                else {
+                    console.log("Error", data.message);
+                    toast.error(data.message);
+                }
+            }
+            console.log("data", data);
+            toast.success(data.message);
+        }
+        catch (e) {
+            console.log("Error", e);
         }
     }
     return (
