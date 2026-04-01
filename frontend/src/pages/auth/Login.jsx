@@ -35,7 +35,11 @@ export default function Login() {
             if (data.message === "User Exists") {
                 console.log("Login Successfull", data.user);
                 toast.success("Login Succesfull");
-                navigate("/admin-dashboard");
+                navigate("/admin-dashboard",{
+                    state:{
+                        name: data.user.name
+                    }
+                });
             }
         } catch (error) {
             console.error("Error:", error);
