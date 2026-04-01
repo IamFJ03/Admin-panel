@@ -1,7 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function SignUp() {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [cnfPassword, setCnfPassword] = useState("");
+
+    const handleSubmit = async () => {
+        try{
+            const res = await fetch("http:127.0.0.1:8000/api/register",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password
+                });
+            })
+        }
+        catch(e){
+
+        }
+    }
     return (
         <div className='flex justify-center items-center h-screen w-screen bg-linear-to-r from-gray-200 to-white'>
             <div className='flex-col rounded-xl shadow-[-10px_10px_30px_rgba(0,0,0,0.5)] px-15 py-10 bg-white'>
@@ -11,25 +34,25 @@ export default function SignUp() {
                 </div>
                 <div className='mb-5'>
                     <label>Name:</label><br />
-                    <input type='text' placeholder='Full Name' className='border rounded px-2 py-0.5 w-full' required />
+                    <input value={name} onChange={(e) => setName(e.target.value)} type='text' placeholder='Full Name' className='border border-gray-400 rounded px-2 py-0.5 w-full' required />
                 </div>
                 <div className='mb-5'>
                     <label>Email address:</label><br />
-                    <input type='email' placeholder='email@example.com' className='border rounded px-2 py-0.5 w-full' required />
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} type='email' placeholder='email@example.com' className='border border-gray-400 rounded px-2 py-0.5 w-full' required />
                 </div>
                 <div className='mb-5'>
                     <label>Password:</label><br />
-                    <input type='password' placeholder='Password' className='border rounded px-2 py-0.5 w-full' required />
+                    <input value={password} onChange={(e) => setPassword(e.target.value)} type='password' placeholder='Password' className='border border-gray-400 rounded px-2 py-0.5 w-full' required />
                 </div>
                 <div className='mb-5'>
                     <label>Confirm Password:</label><br />
-                    <input type='password' placeholder='Confirm Password' className='border rounded px-2 py-0.5 w-full' required />
+                    <input value={cnfPassword} onChange={(e) => setCnfPassword(e.target.value)} type='password' placeholder='Confirm Password' className='border border-gray-400 rounded px-2 py-0.5 w-full' required />
                 </div>
-                <button className='bg-black text-white w-full py-1.5 rounded cursor-pointer'>
+                <button onClick={handleSubmit} className='bg-black text-white w-full py-1.5 rounded cursor-pointer'>
                     Create account
                 </button>
                 <div className='flex justify-center mt-3'>
-                    <label>Already have an account?</label><Link to={'/login'} className='font-semibold border-b'>Log in</Link>
+                    <label>Already have an account?</label><Link to={'/login'} className='font-semibold border-b text-blue-500'>Log in</Link>
                 </div>
             </div>
         </div>
