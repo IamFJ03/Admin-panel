@@ -42,10 +42,10 @@ export default function AdminDashboard() {
           </div>
         </div>
         <div className='flex gap-5 h-[55%] mt-[5%]'>
-          <div className='flex-1 border rounded'></div>
-          <div className='flex-1 border rounded'>
-            <div></div>
-          <div></div>
+          <div className='flex-1 rounded shadow-[-5px_5px_10px_rgb(0,0,0,0.5)]'></div>
+          <div className='flex flex-col flex-1 gap-5 rounded '>
+            <div className='flex-1 rounded shadow-[-2px_3px_10px_rgb(0,0,0,0.5)]'></div>
+            <div className='flex-1 rounded shadow-[-2px_3px_10px_rgb(0,0,0,0.5)]'></div>
           </div>
         </div>
       </div>
