@@ -17,25 +17,26 @@ class AuthController extends Controller
         $data = $request->validated();
         $user = User::where('email', $data['email'])->first();
 
-        if(!Hash::check($data['password'], $user->password)){
+        if(!$user || !Hash::check($data['password'], $user->password)){
         return response()->json([
             "message" => "Unauthorized User"
         ], 401);
-    }
+        }
+        $token = $user->createToken('auth_Token')->plainTextToken;
     return response()->json([
             "message"=> "User Exists",
-            "user"=> $user
+            "user"=> $user,
+            "token"=> $token
         ]);
     } catch (\Exception $e) {
-
-        return response()->json([
-            "message" => "error",
-            "error" => $e->getMessage()
-        ], 500);
-    }
+    return response()->json([
+        "error" => $e->getMessage(),
+        "line" => $e->getLine()
+    ], 500);
+}
 }
 
-public function register(RegistrRequest $request){
+public function register(RegisterRequest $request){
         $data = $request->validated();
         
         $user = User::where('email', $data['email'])->first();
