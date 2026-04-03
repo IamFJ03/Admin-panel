@@ -3,9 +3,10 @@ import Login from './pages/auth/Login';
 import Signup from './pages/auth/SignUp';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
+import UserRecords from './pages/user/UserRecords';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {Toaster} from 'react-hot-toast';
-import Records from './pages/user/MyRecords';
+import Records from './pages/user/AddRecords';
 export default function App() {
   return (
     <BrowserRouter>
@@ -15,7 +16,8 @@ export default function App() {
         <Route path='/register' element={<Signup />} />
         <Route path='/admin-dashboard' element={<AdminDashboard />} />
         <Route path='/user-dashboard' element={<UserDashboard />} />
-        <Route path='/user/records' element={<Records />} />
+        <Route path='/user/add-records' element={<Records />} />
+        <Route path='/user/records' element={<UserRecords />} />
       </Routes>
     </BrowserRouter>
   )
