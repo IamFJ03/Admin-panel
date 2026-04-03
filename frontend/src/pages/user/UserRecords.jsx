@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Sidebar from '../../components/sidebar'
 import { Search } from 'lucide-react'
 export default function UserRecords() {
+    const[category, setCategory] = useState("");
+    const[allTypes, setAllTypes] = useState("");
     return (
         <div>
             <div className='flex w-screen'>
@@ -17,11 +19,21 @@ export default function UserRecords() {
                               <input type='text' placeholder='Search records' className='focus:outline-none focus:border-gray-200'/>
                         </div>
                         <div>
-                            <select>
-                                <option></option>
+                            <select value={allTypes} onChange={(e) => setAllTypes(e.target.value)} className='border border-gray-500 rounded p-1 w-[125%]'>
+                                <option value="" className='font-semibold' disabled>All Types</option>
+                                <option value="rent">Income</option>
+                                <option value="salary">Expenses</option>
                             </select>
                         </div>
-                        <div></div>
+                        <div>
+                            <select value={category} onChange={(e) => setCategory(e.target.value)} className='border border-gray-500 rounded p-1 w-[125%]'>
+                                <option value="" className='font-semibold' disabled>All Categories</option>
+                                <option value="food">Food</option>
+                                <option value="rent">Rent</option>
+                                <option value="salary">Salary</option>
+                            </select>
+                        </div>
+                        
                         <div></div>
                         <div></div>
                     </div>
