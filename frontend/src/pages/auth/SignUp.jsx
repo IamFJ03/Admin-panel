@@ -42,6 +42,10 @@ export default function SignUp() {
             }
             console.log("data", data);
             toast.success(data.message);
+            setName("");
+            setEmail("");
+            setPassword("");
+            setCnfPassword("");
         }
         catch (e) {
             console.log("Error", e);

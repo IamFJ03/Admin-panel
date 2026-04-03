@@ -19,9 +19,10 @@ const barData = [
 ];
   const location = useLocation();
   const name = location.state?.name;
+  const role = location.state?.role;
   return (
     <div className='flex'>
-      <Sidebar />
+      <Sidebar role={role}/>
       <div className='m-5 flex-3'>
         <p className='text-xl font-semibold'>Welcome, {name}!</p>
         <p className='border-b border-gray-400 pb-2 mb-2'>Here's your dashboard overview</p>

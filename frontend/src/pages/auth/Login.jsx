@@ -34,10 +34,14 @@ export default function Login() {
             }
             if (data.message === "User Exists") {
                 console.log("Login Successfull", data.user);
+                console.log("Login Successfull", data.token);
+                localStorage.setItem('token', data.token);
                 toast.success("Login Succesfull");
-                navigate("/admin-dashboard",{
+                
+                    navigate("/admin-dashboard",{
                     state:{
-                        name: data.user.name
+                        name: data.user.name,
+                        role: data.user.role
                     }
                 });
             }

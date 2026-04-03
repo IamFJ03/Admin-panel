@@ -53,5 +53,12 @@ public function register(RegisterRequest $request){
             "data"=> $newUser
         ]);
 }
-
+public function logout(Request $request){
+    $request->user()->currentAccessToken()->delete();
+    return response()->json([
+        "message"=> "Logout Successfull"
+    ]);
 }
+}
+
+
