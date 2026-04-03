@@ -26,9 +26,9 @@ export default function UserRecords() {
     const ranges = getMonthRanges();
     return (
         <div>
-            <div className='flex w-screen'>
+            <div className='flex'>
                 <Sidebar />
-                <div className='w-full m-5 rounded shadow-md flex flex-col'>
+                <div className='flex-3 w-full m-5 rounded shadow-md flex flex-col'>
                     <div className='p-5'>
                         <p className='text-xl font-semibold'>My Records</p>
                         <p className='text-gray-500'>View and manage all your income and expense Records</p>
