@@ -47,9 +47,9 @@ export default function sidebar({ role }) {
               </>
               :
               <>
-                <li className='flex items-center gap-2'><LayoutDashboard size={18} color='white' />Dashboard</li>
-                <li className='flex items-center gap-2'><User size={20} color='white' /><Link to={"/user/records"}>My Records</Link></li>
-                <li className='flex items-center gap-2'><Wallet size={20} color='white' />Add Records</li>
+                <li className='flex items-center gap-2'><LayoutDashboard size={18} color='white' /><Link to={"/admin-dashboard"}>Dashboard</Link></li>
+                <li className='flex items-center gap-2'><User size={20} color='white' />My Records</li>
+                <li className='flex items-center gap-2'><Wallet size={20} color='white' /><Link to={"/user/records"}>Add Records</Link></li>
                 <li className='flex items-center gap-2'><FileText size={20} color='white' />My Reports</li>
                 <li className='flex items-center gap-2'><Settings size={20} color='white' />Settings</li>
               </>
