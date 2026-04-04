@@ -1,22 +1,51 @@
-import React from 'react'
-import Sidebar from '../components/sidebar'
-import { useLocation } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import Sidebar from '../components/sidebar';
+import { useLocation } from 'react-router-dom';
 import { ArrowUpRight, Receipt, Landmark, ArrowDownLeft } from 'lucide-react';
 import { PieChart, Pie, Tooltip,BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
 export default function AdminDashboard() {
+  const[record, setRecord] = useState({});
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const loadSpecificData = async () => {
+      const res = await fetch("http://127.0.0.1:8000/api/loadAmount",{
+        method:"GET",
+        headers:{
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json"
+        }
+      });
+
+      const data = await res.json();
+      if(!res.ok){
+        if(data.errors){
+          console.log(data.errors);
+        }
+        else{
+          console.log(data.message);
+        }
+      }
+
+      if(data.message === "Data Fetched"){
+        console.log(data);
+        setRecord(data);
+      }
+    }
+
+    loadSpecificData();
+  },[]);
+
   const data = [
   { name: "Food", value: 400, fill: "#0088FE" },
   { name: "Rent", value: 800, fill: "#00C49F" },
   { name: "Travel", value: 300, fill: "#FFBB28" }
 ];
 
-const barData = [
-  { name: "Jan", income: 4000, expense: 2400 },
-  { name: "Feb", income: 3000, expense: 1398 },
-  { name: "Mar", income: 5000, expense: 3800 },
-  { name: "Apr", income: 4780, expense: 2908 },
-  { name: "May", income: 5890, expense: 3908 }
-];
+const barData = record?.monthly?.map(item => ({
+  name: new Date(2026, item.month - 1).toLocaleString('default', { month: 'short' }),
+  income: item.income,
+  expense: item.expense
+}))
   const location = useLocation();
   const name = location.state?.name;
   const role = location.state?.role;
@@ -31,28 +60,28 @@ const barData = [
             <ArrowDownLeft size={35} color='white' />
             <div>
               <p>Total Income</p>
-              <p className='text-2xl'>0+</p>
+              <p className='text-2xl'>+{record?.totals?.income}</p>
             </div>
           </div>
           <div className='flex flex-1 gap-5 items-center bg-green-500 rounded p-5 shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer'>
             <ArrowUpRight size={35} color='white' />
             <div>
               <p>Total Expense</p>
-              <p className='text-2xl'>0+</p>
+              <p className='text-2xl'>-{record?.totals?.expense}</p>
             </div>
           </div>
           <div className=' flex flex-1 gap-5 items-center bg-orange-500 rounded p-5 shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer'>
             <Landmark size={35} color='white' />
             <div>
               <p>Net Balance</p>
-              <p className='text-2xl'>0+</p>
+              <p className='text-2xl'>{record?.totals?.balance}</p>
             </div>
           </div>
           <div className='flex flex-2 items-center gap-5 bg-purple-500 rounded p-5 shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer'>
             <Receipt size={35} color='white' />
             <div>
               <p>Total Records</p>
-              <p className='text-2xl'>0+</p>
+              <p className='text-2xl'>+{record?.totalRecords}</p>
             </div>
           </div>
         </div>
