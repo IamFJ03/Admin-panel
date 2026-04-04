@@ -6,7 +6,7 @@ export default function UserRecords() {
     const [category, setCategory] = useState("");
     const [allTypes, setAllTypes] = useState("");
     const [range, setRange] = useState("");
-
+    const [allRecords, setAllRecords] = useState([]);
     useEffect(() => {
         const loadRecords = async () => {
             const token = localStorage.getItem("token");
@@ -30,6 +30,7 @@ export default function UserRecords() {
             if (data.message === "Records Fetched") {
                 toast.success("Records Fetched")
                 console.log(data.records);
+                setAllRecords(data.records);
             }
         }
 
@@ -100,7 +101,7 @@ export default function UserRecords() {
                         </div>
                     </div>
                     <div className='m-5 shadow-lg h-full text-gray-500'>
-                        <ul className='flex justify-between p-3 bg-gray-200 rounded'>
+                        <ul className='grid grid-cols-6 p-3 bg-gray-200 rounded pl-5'>
                             <li>Date</li>
                             <li>Type</li>
                             <li>Category</li>
@@ -108,7 +109,20 @@ export default function UserRecords() {
                             <li>Notes</li>
                             <li>Actions</li>
                         </ul>
+                        <div>
+                        {allRecords.map((data,index) => (
+                            <ul key={index} className='grid grid-cols-6 m-5'>
+                                <li>{data.date}</li>
+                                <li className={`${data.type === "Income" ? 'bg-green-200 text-green-500' : 'bg-red-200 text-red-500'} w-[60%] rounded px-7 py-1`}>{data.type}</li>
+                                <li>{data.category}</li>
+                                <li className={`${data.type === "Income" ? 'text-green-500' : 'text-red-500'} font-semibold`}>{data.amount}</li>
+                                <li>{data.notes}</li>
+                                <li>Notes</li>
+                            </ul>
+                        ))}
                     </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
