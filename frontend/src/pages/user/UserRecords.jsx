@@ -1,11 +1,40 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../../components/sidebar'
-import { Search, Filter } from 'lucide-react'
+import { Search, Filter } from 'lucide-react';
+import toast from 'react-hot-toast';
 export default function UserRecords() {
     const [category, setCategory] = useState("");
     const [allTypes, setAllTypes] = useState("");
     const [range, setRange] = useState("");
 
+    useEffect(() => {
+        const loadRecords = async () => {
+            const token = localStorage.getItem("token");
+            const res = await fetch("http://127.0.0.1:8000/api/loadRecords", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json"
+                }
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                if (data.errors) {
+                    console.log(data.errors);
+                }
+                else
+                    console.log(data.message);
+            }
+
+            if (data.message === "Records Fetched") {
+                toast.success("Records Fetched")
+                console.log(data.records);
+            }
+        }
+
+        loadRecords()
+    }, [])
     const getMonthRanges = () => {
         const today = new Date();
         const ranges = [];

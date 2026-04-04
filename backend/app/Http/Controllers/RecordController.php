@@ -11,7 +11,7 @@ class RecordController extends Controller
     $userId = $request->user()->id;
     $user = User::where('id', $userId)->first();
     $addedRecord = Record::create([
-        'user_id' => $request->user()->id,
+    'user_id' => $request->user()->id,
     'amount' => $request->amount,
     'notes' => $request->notes,
     'date' => $request->date,
@@ -23,6 +23,16 @@ class RecordController extends Controller
         "message"=>"Record stored",
         "user"=>$user,
         "record"=>$addedRecord
+    ]);
+   }
+
+   public function loadRecords(Request $request){
+    $userId = $request->user()->id;
+    $records = Record::where('user_id', $userId)->get();
+
+    return response()->json([
+        "message"=> "Records Fetched",
+        "records"=> $records
     ]);
    }
 }
