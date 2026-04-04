@@ -35,11 +35,20 @@ export default function MyRecords() {
         }
         if (data.message === "Record stored") {
             console.log(data.user);
-            toast.success(data.user.name)
+            toast.success("Record inserted Succesfully")
+            setAmount("");
+            setType("");
+            setCategory("");
+            setDate("");
+            setNotes("");
         }
     }
     const handleClear = () => {
-
+        setAmount("");
+        setType("");
+        setCategory("");
+        setDate("");
+        setNotes("");
     }
     return (
         <div>
@@ -86,7 +95,7 @@ export default function MyRecords() {
                             <textarea rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder='Write Some notes...' className='py-2 px-2 w-[80%] my-2 rounded border border-gray-400' required></textarea>
                         </div>
                         <div>
-                            <img src={Records} className=' bg-black h-53 -ml-5 pointer-events-none' />
+                            <img src={Records} className='h-53 -ml-5 pointer-events-none' />
                         </div>
 
                     </div>
