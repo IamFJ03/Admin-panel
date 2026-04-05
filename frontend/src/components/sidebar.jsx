@@ -51,7 +51,7 @@ export default function sidebar({ role }) {
                 <NavLink to={"/user/records"} className={({isActive}) => `flex items-center gap-2 hover:bg-blue-900 px-7 py-3 w-full rounded transition-all duration-500 ${isActive ? 'bg-blue-900' : ""}`}><User size={20} color='white' />My Records</NavLink>
                 <NavLink to={"/user/add-records"} className={({isActive}) => `flex items-center gap-2 hover:bg-blue-900 px-7 py-3 w-full rounded transition-all duration-500 ${isActive ? 'bg-blue-900' : ""}`}><Wallet size={20} color='white' />Add Records</NavLink>
                 <li className='flex items-center gap-2 px-5 py-3 hover:bg-blue-900 transition-all duration-500'><FileText size={20} color='white' />My Reports</li>
-                <li className='flex items-center gap-2 px-5 py-3 hover:bg-blue-900 transition-all duration-500'><Settings size={20} color='white' />Settings</li>
+                <NavLink to={'/user/setting'} className={({isActive}) => `flex items-center gap-2 hover:bg-blue-900 px-7 py-3 w-full rounded transition-all duration-500 ${isActive ? 'bg-blue-900' : ""}`}> <Settings size={20} color='white' />Settings</NavLink>
               </>
           }
         </ul>

@@ -7,6 +7,7 @@ import UserRecords from './pages/user/UserRecords';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {Toaster} from 'react-hot-toast';
 import Records from './pages/user/AddRecords';
+import Settings from './pages/user/Settings';
 export default function App() {
   return (
     <BrowserRouter>
@@ -18,6 +19,7 @@ export default function App() {
         <Route path='/user-dashboard' element={<UserDashboard />} />
         <Route path='/user/add-records' element={<Records />} />
         <Route path='/user/records' element={<UserRecords />} />
+        <Route path='/user/setting' element={<Settings />} />
       </Routes>
     </BrowserRouter>
   )
