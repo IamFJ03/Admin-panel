@@ -58,6 +58,11 @@ class RecordController extends Controller
         ")
         ->first();
 
+    $category = Record::where('user_id', $userId)
+    ->selectRaw('category, Sum(amount) as total')
+    ->groupBy('category')
+    ->get();
+
     $currentMonth = Record::where('user_id', $userId)
         ->whereMonth('date', now()->month)
         ->whereYear('date', now()->year)
@@ -80,7 +85,8 @@ class RecordController extends Controller
             'expense' => $currentMonth->expense ?? 0,
             'balance' => ($currentMonth->income ?? 0) - ($currentMonth->expense ?? 0),
         ],
-        "totalRecords"=> $records
+        "totalRecords"=> $records,
+        "categoryTotal"=> $category
     ]);
    }
 }

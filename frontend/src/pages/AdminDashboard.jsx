@@ -5,6 +5,7 @@ import { ArrowUpRight, Receipt, Landmark, ArrowDownLeft } from 'lucide-react';
 import { PieChart, Pie, Tooltip,BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
 export default function AdminDashboard() {
   const[record, setRecord] = useState({});
+  const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7c7c", "#8dd1e1"];
   useEffect(() => {
     const token = localStorage.getItem("token");
     const loadSpecificData = async () => {
@@ -35,11 +36,11 @@ export default function AdminDashboard() {
     loadSpecificData();
   },[]);
 
-  const data = [
-  { name: "Food", value: 400, fill: "#0088FE" },
-  { name: "Rent", value: 800, fill: "#00C49F" },
-  { name: "Travel", value: 300, fill: "#FFBB28" }
-];
+  const data = record?.categoryTotal?.map((item, index) => ({
+    name: item.category,
+    value: Number(item.total),
+    fill: colors[index%colors.length]
+  }))
 
 const barData = record?.monthly?.map(item => ({
   name: new Date(2026, item.month - 1).toLocaleString('default', { month: 'short' }),
