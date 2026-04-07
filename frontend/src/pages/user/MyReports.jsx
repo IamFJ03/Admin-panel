@@ -46,7 +46,7 @@ export default function MyRecords() {
   return (
     <div className='flex'>
       <Sidebar />
-      <div className='m-5 flex-3 shadow-md'>
+      <div className='m-5 flex-3 shadow-md overflow-y-auto'>
         <p className='text-xl font-semibold m-5'>My Reports</p>
         <div className='ml-5 flex gap-5 items-center'>
           <label>Show:</label>
@@ -84,7 +84,7 @@ export default function MyRecords() {
         <div className='flex mx-5 gap-10'>
           <div className='flex-1'>
             <p className='text-xl font-semibold'>Income vs Expense</p>
-            <PieChart width={350} height={250}>
+            <PieChart width={350} height={250} className='mt-5'>
               <Pie data={pieData} outerRadius={100} dataKey="value" label>
                 <Tooltip />
               </Pie>
@@ -93,7 +93,7 @@ export default function MyRecords() {
           <div className='flex-1'>
             <p className='text-xl font-semibold'>Cash Flow</p>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={barData}>
+              <BarChart data={barData} className='mt-5'>
                 <CartesianGrid strokeDasharray="3 3"/>
                 <XAxis dataKey="name"/>
                 <YAxis />
@@ -101,6 +101,17 @@ export default function MyRecords() {
                 <Bar dataKey="expense" fill='#FF6384'/>
               </BarChart>
             </ResponsiveContainer>
+          </div>
+        </div>
+        <div className='m-5'>
+          <p className='text-xl font-semibold'>Transactions by Category</p>
+          <div className='my-5'>
+            <ul className='grid grid-cols-4 bg-gray-200 p-2'>
+              <li>Category</li>
+              <li>Amount</li>
+              <li>No of Transactions</li>
+              <li>Percentage</li>
+            </ul>
           </div>
         </div>
       </div>
