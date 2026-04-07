@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from '../../components/sidebar';
 import { PieChart, Pie, CartesianGrid, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
+import {motion} from "framer-motion";
+
 export default function MyRecords() {
   const [category, setCategory] = useState("All");
+  const [categoryData, setCategoryData] = useState([]);
+  const [categoryTotal, setCategoryTotal] = useState(0);
   useEffect(() => {
     const filterCategory = async () => {
       const token = localStorage.getItem('token');
@@ -15,21 +19,25 @@ export default function MyRecords() {
       });
 
       const data = await res.json();
-      if(!res.ok){
-        if(data.errors){
+      if (!res.ok) {
+        if (data.errors) {
           console.log(data.errors);
         }
-        else{
+        else {
           console.log(data.message);
         }
       }
 
-      if(data.message === "Category Data Fetched")
-        console.log(data.categoryData);
+      if (data.message === "Category Data Fetched") {
+        console.log(data);
+        setCategoryData(data.categoryData);
+        setCategoryTotal(data.categoryTotal);
+      }
     }
 
     filterCategory();
-  }, [])
+  }, []);
+
   const pieData = [
     {
       name: "Income",
@@ -134,12 +142,34 @@ export default function MyRecords() {
         <div className='m-5'>
           <p className='text-xl font-semibold'>Transactions by Category</p>
           <div className='my-5'>
-            <ul className='grid grid-cols-4 bg-gray-200 p-2'>
+            <ul className='grid grid-cols-4 bg-gray-200 p-2 text-gray-500'>
               <li>Category</li>
               <li>Amount</li>
               <li>No of Transactions</li>
               <li>Percentage</li>
             </ul>
+
+            {categoryData.map(item => (
+              <ul className='grid grid-cols-4 p-2'>
+                <li>{item.category}</li>
+                <li>{item.total}</li>
+                <li>{item.counts}</li>
+                <div className='flex items-center gap-5'>
+                  <div className='h-3 bg-gray-200 w-50 rounded-2xl'>
+                    <motion.div className='bg-blue-500 h-3 rounded-2xl ' 
+                    initial={{ width: 0 }}
+                    animate={{
+                      width: `${((parseFloat(item.total) / categoryTotal) * 100).toFixed(2)}%`
+                    }}
+                    transition={{duration: 1.5, ease: "easeOut"}}
+                    />
+
+                  </div>
+                  <li>{((item.total / categoryTotal) * 100).toFixed(2)}%</li>
+                </div>
+              </ul>
+            ))}
+
           </div>
         </div>
       </div>

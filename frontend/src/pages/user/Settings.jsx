@@ -2,12 +2,12 @@ import React from 'react'
 import Sidebar from '../../components/sidebar'
 export default function Settings() {
     const Currency = [
-  { code: "USD", name: "US Dollar", symbol: "$" },
-  { code: "EUR", name: "Euro", symbol: "€" },
-  { code: "JPY", name: "Japanese Yen", symbol: "¥" },
-  { code: "GBP", name: "British Pound", symbol: "£" },
-  { code: "INR", name: "Indian Rupee", symbol: "₹" }
-]
+        { code: "USD", name: "US Dollar", symbol: "$" },
+        { code: "EUR", name: "Euro", symbol: "€" },
+        { code: "JPY", name: "Japanese Yen", symbol: "¥" },
+        { code: "GBP", name: "British Pound", symbol: "£" },
+        { code: "INR", name: "Indian Rupee", symbol: "₹" }
+    ]
     return (
         <div className='flex'>
             <Sidebar />
@@ -36,7 +36,7 @@ export default function Settings() {
                             <select className='p-2 text-gray-500'>
                                 <option value="" disabled>Select Currency</option>
                                 {Currency.map(item => (
-                                    <option  className='p-2'>{item.symbol}{item.code} - {item.name}</option>
+                                    <option className='p-2'>{item.symbol}{item.code} - {item.name}</option>
                                 ))}
                             </select>
                         </div>

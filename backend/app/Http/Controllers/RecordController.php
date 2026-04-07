@@ -96,14 +96,17 @@ class RecordController extends Controller
  $categoryFetch = $request->query('category');
  if($categoryFetch === "All"){
     $category = Record::where('user_id', $userId)
-    ->selectRaw("category, Sum(amount) as total")
+    ->selectRaw("category, Sum(amount) as total, Count(*) as counts")
     ->groupBy('category')
     ->get();
  }
 
+ $categoryTotal = Record::where('user_id', $userId)->sum('amount');
+
     return response()->json([
         "message"=> "Category Data Fetched",
-        "categoryData"=> $category
+        "categoryData"=> $category,
+        "categoryTotal"=> $categoryTotal
     ]);
    }
 }
