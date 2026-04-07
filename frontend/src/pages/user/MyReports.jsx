@@ -1,7 +1,35 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../../components/sidebar';
-import {PieChart, Pie, CartesianGrid, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis} from 'recharts';
+import { PieChart, Pie, CartesianGrid, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
 export default function MyRecords() {
+  const [category, setCategory] = useState("All");
+  useEffect(() => {
+    const filterCategory = async () => {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`http://127.0.0.1:8000/api/filterCategory?category=${encodeURIComponent(category)}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
+        }
+      });
+
+      const data = await res.json();
+      if(!res.ok){
+        if(data.errors){
+          console.log(data.errors);
+        }
+        else{
+          console.log(data.message);
+        }
+      }
+
+      if(data.message === "Category Data Fetched")
+        console.log(data.categoryData);
+    }
+
+    filterCategory();
+  }, [])
   const pieData = [
     {
       name: "Income",
@@ -46,7 +74,7 @@ export default function MyRecords() {
   return (
     <div className='flex'>
       <Sidebar />
-      <div className='m-5 flex-3 shadow-md overflow-y-auto'>
+      <div className='m-5 flex-3 shadow-md overflow-y-scroll max-h-173'>
         <p className='text-xl font-semibold m-5'>My Reports</p>
         <div className='ml-5 flex gap-5 items-center'>
           <label>Show:</label>
@@ -56,8 +84,8 @@ export default function MyRecords() {
             <option value="">All Reports</option>
           </select>
           <label>Category:</label>
-          <select className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
-            <option value="" disabled>Select Categories</option>
+          <select value={category} onChange={(e) => setCategory(e.target.value)} className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
+            <option value="All" disabled>All</option>
             <option value="Rent">Rent</option>
             <option value="Salary">Salary</option>
             <option value="Food">Food</option>
@@ -94,11 +122,11 @@ export default function MyRecords() {
             <p className='text-xl font-semibold'>Cash Flow</p>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={barData} className='mt-5'>
-                <CartesianGrid strokeDasharray="3 3"/>
-                <XAxis dataKey="name"/>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
                 <YAxis />
-                <Bar dataKey="income" fill='#36A2EB'/>
-                <Bar dataKey="expense" fill='#FF6384'/>
+                <Bar dataKey="income" fill='#36A2EB' />
+                <Bar dataKey="expense" fill='#FF6384' />
               </BarChart>
             </ResponsiveContainer>
           </div>

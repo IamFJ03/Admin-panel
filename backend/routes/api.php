@@ -10,3 +10,4 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 Route::middleware('auth:sanctum')->post('/records', [RecordController::class, 'addRecord']);
 Route::middleware('auth:sanctum')->get('/loadRecords', [RecordController::class, 'loadRecords']);
 Route::middleware('auth:sanctum')->get('/loadAmount', [RecordController::class, 'loadAmount']);
+Route::middleware('auth:sanctum')->get('/filterCategory', [RecordController::class, 'filterCategory']);
