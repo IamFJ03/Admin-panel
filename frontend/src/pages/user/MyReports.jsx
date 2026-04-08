@@ -4,10 +4,10 @@ import { PieChart, Pie, CartesianGrid, ResponsiveContainer, Tooltip, BarChart, B
 import { motion } from "framer-motion";
 
 export default function MyRecords() {
-  const[category, setCategory] = useState("All");
-  const[categoryData, setCategoryData] = useState([]);
-  const[categoryTotal, setCategoryTotal] = useState(0);
-  const[currentMonth, setCurrentMonth] = useState({});
+  const [category, setCategory] = useState("All");
+  const [categoryData, setCategoryData] = useState([]);
+  const [categoryTotal, setCategoryTotal] = useState(0);
+  const [currentMonth, setCurrentMonth] = useState({});
 
   const filterCategory = async (categoryValue) => {
     const token = localStorage.getItem('token');
@@ -91,16 +91,29 @@ export default function MyRecords() {
         <div className='ml-5 flex gap-5 items-center'>
           <label>Show:</label>
           <select className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
-            <option value="">This Month</option>
-            <option value="">All Reports</option>
+            <option value="">{new Date().toLocaleString('default', { month: 'long' })}</option>
+            <option value="">
+              {new Date(new Date().setMonth(new Date().getMonth() - 1))
+                .toLocaleString('default', { month: 'long' })}
+            </option>
+
+            <option value="">
+              {new Date(new Date().setMonth(new Date().getMonth() - 2))
+                .toLocaleString('default', { month: 'long' })}
+            </option>
+
+            <option value="">
+              {new Date(new Date().setMonth(new Date().getMonth() - 3))
+                .toLocaleString('default', { month: 'long' })}
+            </option>
           </select>
           <label>Category:</label>
           <select value={category} onChange={(e) => {
             const val = e.target.value;
             setCategory(val)
             filterCategory()
-            
-            }} className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
+
+          }} className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
             <option value="All" disabled>All</option>
             <option value="Rent">Rent</option>
             <option value="Salary">Salary</option>
