@@ -1,52 +1,56 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from '../../components/sidebar';
 import { PieChart, Pie, CartesianGrid, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function MyRecords() {
-  const [category, setCategory] = useState("All");
-  const [categoryData, setCategoryData] = useState([]);
-  const [categoryTotal, setCategoryTotal] = useState(0);
-  useEffect(() => {
-    const filterCategory = async () => {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`http://127.0.0.1:8000/api/filterCategory?category=${encodeURIComponent(category)}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json'
-        }
-      });
+  const[category, setCategory] = useState("All");
+  const[categoryData, setCategoryData] = useState([]);
+  const[categoryTotal, setCategoryTotal] = useState(0);
+  const[currentMonth, setCurrentMonth] = useState({});
 
-      const data = await res.json();
-      if (!res.ok) {
-        if (data.errors) {
-          console.log(data.errors);
-        }
-        else {
-          console.log(data.message);
-        }
+  const filterCategory = async (categoryValue) => {
+    const token = localStorage.getItem('token');
+    const val = categoryValue ? categoryValue : category;
+    const res = await fetch(`http://127.0.0.1:8000/api/filterCategory?category=${encodeURIComponent(val)}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json'
       }
+    });
 
-      if (data.message === "Category Data Fetched") {
-        console.log(data);
-        setCategoryData(data.categoryData);
-        setCategoryTotal(data.categoryTotal);
+    const data = await res.json();
+    if (!res.ok) {
+      if (data.errors) {
+        console.log(data.errors);
+      }
+      else {
+        console.log(data.message);
       }
     }
 
+    if (data.message === "Category Data Fetched") {
+      console.log(data);
+      setCategoryData(data.categoryData);
+      setCategoryTotal(data.categoryTotal);
+      setCurrentMonth(data.currentMonth);
+    }
+  }
+
+  useEffect(() => {
     filterCategory();
   }, []);
 
   const pieData = [
     {
       name: "Income",
-      value: 5250,
+      value: Number(currentMonth.income),
       fill: '#007bff'
     },
     {
       name: "Expense",
-      value: 2430,
+      value: Number(currentMonth.expense),
       fill: '#bff007'
     }
   ];
@@ -54,27 +58,27 @@ export default function MyRecords() {
   const barData = [
     {
       name: "April",
-      income: 5250,
-      expense: 2430
+      income: Number(currentMonth.income),
+      expense: Number(currentMonth.expense)
     },
     {}
   ]
   const financeData = [
     {
       type: 'Income',
-      amount: 5250,
-      statement: '12 transactions',
+      amount: Number(currentMonth.income),
+      statement: `${currentMonth.incomeTransaction} transactions`,
       color: 'bg-green-100'
     },
     {
       type: 'Expense',
-      amount: 2430,
-      statement: '8 transactions',
+      amount: Number(currentMonth.expense),
+      statement: `${currentMonth.expenseTransaction} transactions`,
       color: 'bg-red-100'
     },
     {
       type: 'Net Balance',
-      amount: 2820,
+      amount: Number(currentMonth.balance),
       statement: '(Income - Expenses)',
       color: 'bg-blue-100'
     }
@@ -87,12 +91,16 @@ export default function MyRecords() {
         <div className='ml-5 flex gap-5 items-center'>
           <label>Show:</label>
           <select className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
-            <option value="">Show</option>
             <option value="">This Month</option>
             <option value="">All Reports</option>
           </select>
           <label>Category:</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
+          <select value={category} onChange={(e) => {
+            const val = e.target.value;
+            setCategory(val)
+            filterCategory()
+            
+            }} className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
             <option value="All" disabled>All</option>
             <option value="Rent">Rent</option>
             <option value="Salary">Salary</option>
@@ -156,12 +164,12 @@ export default function MyRecords() {
                 <li>{item.counts}</li>
                 <div className='flex items-center gap-5'>
                   <div className='h-3 bg-gray-200 w-50 rounded-2xl'>
-                    <motion.div className='bg-blue-500 h-3 rounded-2xl ' 
-                    initial={{ width: 0 }}
-                    animate={{
-                      width: `${((parseFloat(item.total) / categoryTotal) * 100).toFixed(2)}%`
-                    }}
-                    transition={{duration: 1.5, ease: "easeOut"}}
+                    <motion.div className='bg-blue-500 h-3 rounded-2xl '
+                      initial={{ width: 0 }}
+                      animate={{
+                        width: `${((parseFloat(item.total) / categoryTotal) * 100).toFixed(2)}%`
+                      }}
+                      transition={{ duration: 1.5, ease: "easeOut" }}
                     />
 
                   </div>

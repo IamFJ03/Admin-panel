@@ -100,13 +100,40 @@ class RecordController extends Controller
     ->groupBy('category')
     ->get();
  }
+ else{
+    $category = Record::where('user_id', $userId)
+    ->where('category', $categoryFetch)
+    ->selectRaw("category, Sum(amount) as total, Count(*) as counts")
+    ->groupBy('category')
+    ->get();
+ }
+ $currentMonth = Record::where('user_id', $userId)
+        ->whereMonth('date', now()->month)
+        ->whereYear('date', now()->year)
+        ->selectRaw("
+            SUM(CASE WHEN type='Income' THEN amount ELSE 0 END) as income,
+            SUM(CASE WHEN type='Expense' THEN amount ELSE 0 END) as expense,
+            COUNT(CASE WHEN type='Income' THEN 1 END) as income_count,
+            COUNT(CASE WHEN type='Expense' THEN 1 END) as expense_count
+        ")
+        ->first();
 
+  $currntTotal = $currentMonth->income - $currentMonth->expense;
+  
  $categoryTotal = Record::where('user_id', $userId)->sum('amount');
-
+    
     return response()->json([
         "message"=> "Category Data Fetched",
         "categoryData"=> $category,
-        "categoryTotal"=> $categoryTotal
+        "categoryTotal"=> $categoryTotal,
+        "currentMonth"=> [
+            "income"=> $currentMonth->income,
+            "expense"=> $currentMonth->expense,
+            "incomeTransaction"=>$currentMonth->income_count,
+            "expenseTransaction"=> $currentMonth->expense_count,
+            "balance"=>$currntTotal
+        ],
+        
     ]);
    }
 }
