@@ -108,9 +108,21 @@ class RecordController extends Controller
     ->get();
  }
  $dateFilter = $request->query('date');
- $currentMonth = Record::where('user_id', $userId)
-        ->whereMonth('date', now()->month)
-        ->whereYear('date', now()->year)
+ if($dateFilter === "This Month"){
+    $month = now()->month;
+    $year = now()->year;
+ }
+ else{
+    $month = $dateFilter;
+    $year = now()->year;
+    if($month > now()->month){
+        $year = now()->subYear()->year;
+    }
+ }
+
+$currentMonth = Record::where('user_id', $userId)
+        ->whereMonth('date', $month)
+        ->whereYear('date', $year)
         ->selectRaw("
             SUM(CASE WHEN type='Income' THEN amount ELSE 0 END) as income,
             SUM(CASE WHEN type='Expense' THEN amount ELSE 0 END) as expense,

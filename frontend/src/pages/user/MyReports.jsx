@@ -93,20 +93,17 @@ export default function MyRecords() {
           <label>Show:</label>
           <select value={currDate} onChange={(e) => setCurrDate(e.target.value)} className='border border-gray-400 rounded p-1 cursor-pointer w-[20%]'>
             <option value="This Month">{new Date().toLocaleString('default', { month: 'long' })}</option>
-            <option value={new Date(new Date().setMonth(new Date().getMonth() - 1))
-                .toLocaleString('default', { month: 'long' })}>
+            <option value={new Date().getMonth()}>
               {new Date(new Date().setMonth(new Date().getMonth() - 1))
                 .toLocaleString('default', { month: 'long' })}
             </option>
 
-            <option value={new Date(new Date().setMonth(new Date().getMonth() - 2))
-                .toLocaleString('default', { month: 'long' })}>
+            <option value={new Date().getMonth() - 1}>
               {new Date(new Date().setMonth(new Date().getMonth() - 2))
                 .toLocaleString('default', { month: 'long' })}
             </option>
 
-            <option value={new Date(new Date().setMonth(new Date().getMonth() - 3))
-                .toLocaleString('default', { month: 'long' })}>
+            <option value={new Date().getMonth() - 2}>
               {new Date(new Date().setMonth(new Date().getMonth() - 3))
                 .toLocaleString('default', { month: 'long' })}
             </option>
