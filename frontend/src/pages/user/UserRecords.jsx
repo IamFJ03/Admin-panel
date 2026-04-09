@@ -52,6 +52,34 @@ export default function UserRecords() {
 
         return ranges;
     };
+    
+    const handleRecordDelete = async (recordId) => {
+        console.log(recordId);
+        const token = await localStorage.getItem('token');
+        const res = await fetch(`http://127.0.0.1:8000/api/deleteRecord/${recordId}`,{
+            method:"DELETE",
+            headers:{
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json'
+            }
+        });
+
+        const data = await res.json();
+        if(!res.ok){
+            if(data.errors){
+                console.log(data.errors);
+            }
+            else{
+                console.log(data.message);
+            }
+        }
+
+        if(data.message === "Deleted successfully"){
+            setAllRecords((prev)=>
+                prev.filter(item => item.id !== recordId)
+            )
+        }
+    }
 
     const ranges = getMonthRanges();
     return (
@@ -110,14 +138,14 @@ export default function UserRecords() {
                             <li>Actions</li>
                         </ul>
                         <div>
-                        {allRecords.map((data,index) => (
+                        {allRecords?.map((data,index) => (
                             <ul key={index} className='grid grid-cols-6 m-5'>
                                 <li>{data.date}</li>
                                 <li className={`${data.type === "Income" ? 'bg-green-200 text-green-500' : 'bg-red-200 text-red-500'} w-[60%] rounded px-7 py-1`}>{data.type}</li>
                                 <li>{data.category}</li>
                                 <li className={`${data.type === "Income" ? 'text-green-500' : 'text-red-500'} font-semibold`}>{data.amount}</li>
                                 <li>{data.notes}</li>
-                                <li>Notes</li>
+                                <li><button onClick={() => handleRecordDelete(data.id)} className='bg-red-500 ml-5 py-1 px-3 text-white rounded cursor-pointer'>Delete</button></li>
                             </ul>
                         ))}
                     </div>

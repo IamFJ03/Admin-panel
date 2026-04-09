@@ -146,7 +146,11 @@ $currentMonth = Record::where('user_id', $userId)
             "expenseTransaction"=> $currentMonth->expense_count,
             "balance"=>$currntTotal
         ],
-        
     ]);
+   }
+
+   public function deleteRecord($id){
+    $deletedRecord = Record::where('id', $id)->delete();
+    return response()->json(['message' => 'Deleted successfully']);
    }
 }

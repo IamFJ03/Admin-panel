@@ -11,3 +11,4 @@ Route::middleware('auth:sanctum')->post('/records', [RecordController::class, 'a
 Route::middleware('auth:sanctum')->get('/loadRecords', [RecordController::class, 'loadRecords']);
 Route::middleware('auth:sanctum')->get('/loadAmount', [RecordController::class, 'loadAmount']);
 Route::middleware('auth:sanctum')->get('/filterCategory', [RecordController::class, 'filterCategory']);
+Route::middleware('auth:sanctum')->delete('/deleteRecord/{id}', [RecordController::class, 'deleteRecord']);
