@@ -107,6 +107,7 @@ class RecordController extends Controller
     ->groupBy('category')
     ->get();
  }
+ $dateFilter = $request->query('date');
  $currentMonth = Record::where('user_id', $userId)
         ->whereMonth('date', now()->month)
         ->whereYear('date', now()->year)
