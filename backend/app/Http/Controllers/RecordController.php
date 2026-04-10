@@ -69,7 +69,7 @@ class RecordController extends Controller
         ->groupBy('month')
         ->orderBy('month')
         ->get();
-
+    
     $totals = Record::where('user_id', $userId)
         ->selectRaw("
             SUM(CASE WHEN type='Income' THEN amount ELSE 0 END) as income,
@@ -90,6 +90,11 @@ class RecordController extends Controller
             SUM(CASE WHEN type='Expense' THEN amount ELSE 0 END) as expense
         ")
         ->first();
+    
+    $recentTransactions = Record::where('user_id', $userId)
+                        ->orderBy('date','desc')
+                        ->limit(5)
+                        ->get();
 
     return response()->json([
         "message"=> "Data Fetched",
@@ -99,11 +104,7 @@ class RecordController extends Controller
             'expense' => $totals->expense ?? 0,
             'balance' => ($totals->income ?? 0) - ($totals->expense ?? 0),
         ],
-        'currentMonth' => [
-            'income' => $currentMonth->income ?? 0,
-            'expense' => $currentMonth->expense ?? 0,
-            'balance' => ($currentMonth->income ?? 0) - ($currentMonth->expense ?? 0),
-        ],
+        "transaction" => $recentTransactions,
         "totalRecords"=> $records,
         "categoryTotal"=> $category
     ]);

@@ -5,6 +5,7 @@ import { ArrowUpRight, Receipt, Landmark, ArrowDownLeft } from 'lucide-react';
 import { PieChart, Pie, Tooltip, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
 export default function AdminDashboard() {
   const [record, setRecord] = useState({});
+  const [transactions, setTransactions] = useState([]);
   const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7c7c", "#8dd1e1"];
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -30,6 +31,7 @@ export default function AdminDashboard() {
       if (data.message === "Data Fetched") {
         console.log(data);
         setRecord(data);
+        setTransactions(data.transaction);
       }
     }
 
@@ -53,7 +55,7 @@ export default function AdminDashboard() {
   return (
     <div className='flex'>
       <Sidebar role={role} />
-      <div className='m-5 flex-3'>
+      <div className='m-5 flex-3 overflow-y-auto max-h-173 shadow-md'>
         <p className='text-xl font-semibold'>Welcome, {name}!</p>
         <p className='border-b border-gray-400 pb-2 mb-2'>Here's your dashboard overview</p>
         <div className='flex gap-5 mt-5 text-white'>
@@ -86,7 +88,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        <div className='flex gap-5 h-[65%] mt-[5%]'>
+        <div className='flex gap-5 mt-[5%]'>
           <div className='flex-1 rounded shadow-[-5px_5px_10px_rgb(0,0,0,0.5)]'>
             <p className='font-semibold m-3 text-xl'>Income Vs Expense</p>
             <ResponsiveContainer width="100%" height={300} className='mt-20'>
@@ -103,15 +105,30 @@ export default function AdminDashboard() {
           <div className='flex flex-col flex-1 gap-5 rounded '>
             <div className='flex-1 rounded shadow-[-2px_3px_10px_rgb(0,0,0,0.5)]'>
               <p className='font-semibold m-3 text-xl'>Category Breakdown</p>
-              <PieChart width={350} height={250}>
+              <PieChart width={350} height={300}>
                 <Pie data={data} outerRadius={100} dataKey="value" label>
                   <Tooltip />
                 </Pie>
               </PieChart>
             </div>
             <div className='flex-1 rounded shadow-[-2px_3px_10px_rgb(0,0,0,0.5)]'>
-              <p className='font-semibold m-3 text-xl'>Recent Transactions</p>
-            </div>
+  <p className='font-semibold m-3 text-xl'>Recent Transactions</p>
+
+  <div className=' px-3'>
+    {record.transaction && record.transaction.length > 0 ? (
+      record.transaction.map(item => (
+        <div key={item.id} className='flex justify-between border-b py-2'>
+          <span>{item.category}</span>
+          <span className={`${item.type === "Income" ? 'text-green-500' : 'text-red-500'}`}>
+            {item.amount}
+          </span>
+        </div>
+      ))
+    ) : (
+      <p className='text-gray-400'>No transactions found</p>
+    )}
+  </div>
+</div>
           </div>
         </div>
       </div>
