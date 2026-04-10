@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 export default function UserRecords() {
     const [category, setCategory] = useState("");
     const [allTypes, setAllTypes] = useState("");
-    const [range, setRange] = useState("This Month");
+    const [range, setRange] = useState("All");
     const [allRecords, setAllRecords] = useState([]);
     useEffect(() => {
         const loadRecords = async () => {
@@ -36,7 +36,7 @@ export default function UserRecords() {
 
         loadRecords()
 
-    }, [range])
+    }, [range, category, allTypes])
 
 
     const handleRecordDelete = async (recordId) => {
@@ -83,14 +83,14 @@ export default function UserRecords() {
                         </div>
                         <div>
                             <select value={allTypes} onChange={(e) => setAllTypes(e.target.value)} className='border border-gray-500 rounded p-1 w-[120%]'>
-                                <option value="" className='font-semibold' disabled>All Types</option>
-                                <option value="rent">Income</option>
-                                <option value="salary">Expenses</option>
+                                <option value="" className='font-semibold'>All Types</option>
+                                <option value="Income">Income</option>
+                                <option value="Expense">Expenses</option>
                             </select>
                         </div>
                         <div>
                             <select value={category} onChange={(e) => setCategory(e.target.value)} className='border border-gray-500 rounded p-1 w-[120%]'>
-                                <option value="" className='font-semibold' disabled>All Categories</option>
+                                <option value="" className='font-semibold'>All Categories</option>
                                 <option value="food">Food</option>
                                 <option value="rent">Rent</option>
                                 <option value="salary">Salary</option>
@@ -98,28 +98,30 @@ export default function UserRecords() {
                         </div>
 
                         <div>
-                            <select 
-        value={range} 
-        onChange={(e) => setRange(e.target.value)} 
-        className='border border-gray-400 rounded p-1 cursor-pointer'
-    >
-        {/* Option 1: Current Month */}
-        <option value="This Month">
-            {new Date().toLocaleString('default', { month: 'long' })}
-        </option>
+                            <select
+                                value={range}
+                                onChange={(e) => setRange(e.target.value)}
+                                className='border border-gray-400 rounded p-1 cursor-pointer'
+                            >
+                                {/* Option 1: Current Month */}
+                                <option value="All">
+                                    All Time
+                                </option>
+                                <option value={new Date().getMonth()+1}>
+                                    {new Date(new Date().setMonth(new Date().getMonth())).toLocaleString('default', { month: 'long' })}
+                                </option>
+                                <option value={new Date().getMonth()}>
+                                    {new Date(new Date().setMonth(new Date().getMonth() - 1)).toLocaleString('default', { month: 'long' })}
+                                </option>
 
-        <option value={new Date().getMonth()}>
-            {new Date(new Date().setMonth(new Date().getMonth() - 1)).toLocaleString('default', { month: 'long' })}
-        </option>
+                                <option value={new Date().getMonth() - 1}>
+                                    {new Date(new Date().setMonth(new Date().getMonth() - 2)).toLocaleString('default', { month: 'long' })}
+                                </option>
 
-        <option value={new Date().getMonth()-1}>
-            {new Date(new Date().setMonth(new Date().getMonth() - 2)).toLocaleString('default', { month: 'long' })}
-        </option>
-
-        <option value={new Date().getMonth()-2}>
-            {new Date(new Date().setMonth(new Date().getMonth() - 3)).toLocaleString('default', { month: 'long' })}
-        </option>
-    </select>
+                                <option value={new Date().getMonth() - 2}>
+                                    {new Date(new Date().setMonth(new Date().getMonth() - 3)).toLocaleString('default', { month: 'long' })}
+                                </option>
+                            </select>
                         </div>
                         <div className='flex items-center bg-gray-200 py-1 px-5 gap-2 rounded cursor-pointer'>
                             <Filter size={15} color='black' />

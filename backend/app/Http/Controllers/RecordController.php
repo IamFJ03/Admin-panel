@@ -28,8 +28,31 @@ class RecordController extends Controller
 
    public function loadRecords(Request $request){
     $userId = $request->user()->id;
-    $records = Record::where('user_id', $userId)->get();
+    $date = $request->query('date');
+    $category = $request->query('category');
+    $type = $request->query('types');
+    $record = Record::where('user_id', $userId);
 
+    if(!empty($category)){
+        $record->where('category', $category);
+    }
+    if(!empty($type)){
+        $record->where('type', $type);
+    }
+    if($date && $date !== "All"){
+        $month = (int)$date;
+        $year = now()->year;
+
+        if($month > now()->month){
+            $year = now()->subYear()->year;
+        }
+
+        $record->whereMonth('date', $month)
+               ->whereYear('date', $year);
+    }
+
+
+    $records = $record->get();
     return response()->json([
         "message"=> "Records Fetched",
         "records"=> $records
