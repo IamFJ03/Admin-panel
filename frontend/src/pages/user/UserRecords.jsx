@@ -5,12 +5,12 @@ import toast from 'react-hot-toast';
 export default function UserRecords() {
     const [category, setCategory] = useState("");
     const [allTypes, setAllTypes] = useState("");
-    const [range, setRange] = useState("");
+    const [range, setRange] = useState("This Month");
     const [allRecords, setAllRecords] = useState([]);
     useEffect(() => {
         const loadRecords = async () => {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://127.0.0.1:8000/api/loadRecords", {
+            const res = await fetch(`http://127.0.0.1:8000/api/loadRecords?category=${encodeURIComponent(category)}&date=${encodeURIComponent(range)}&types=${encodeURIComponent(allTypes)}`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -35,53 +35,38 @@ export default function UserRecords() {
         }
 
         loadRecords()
-    }, [])
-    const getMonthRanges = () => {
-        const today = new Date();
-        const ranges = [];
 
-        for (let i = 0; i < 6; i++) {
-            const start = new Date(today.getFullYear(), today.getMonth() - i, 1);
-            const end = new Date(today.getFullYear(), today.getMonth() - i + 1, 0);
+    }, [range])
 
-            ranges.push({
-                label: `${start.toLocaleString("default", { month: "long" })} ${start.getDate()} - ${end.toLocaleString("default", { month: "long" })} ${end.getDate()}`,
-                value: `${start.toISOString()}_${end.toISOString()}`,
-            });
-        }
 
-        return ranges;
-    };
-    
     const handleRecordDelete = async (recordId) => {
         console.log(recordId);
         const token = await localStorage.getItem('token');
-        const res = await fetch(`http://127.0.0.1:8000/api/deleteRecord/${recordId}`,{
-            method:"DELETE",
-            headers:{
+        const res = await fetch(`http://127.0.0.1:8000/api/deleteRecord/${recordId}`, {
+            method: "DELETE",
+            headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: 'application/json'
             }
         });
 
         const data = await res.json();
-        if(!res.ok){
-            if(data.errors){
+        if (!res.ok) {
+            if (data.errors) {
                 console.log(data.errors);
             }
-            else{
+            else {
                 console.log(data.message);
             }
         }
 
-        if(data.message === "Deleted successfully"){
-            setAllRecords((prev)=>
+        if (data.message === "Deleted successfully") {
+            setAllRecords((prev) =>
                 prev.filter(item => item.id !== recordId)
             )
         }
     }
 
-    const ranges = getMonthRanges();
     return (
         <div>
             <div className='flex'>
@@ -113,15 +98,28 @@ export default function UserRecords() {
                         </div>
 
                         <div>
-                            <select value={range} onChange={(e) => setRange(e.target.value)} className='border border-gray-500 rounded p-1'>
-                                <option value="">Select Date Range</option>
+                            <select 
+        value={range} 
+        onChange={(e) => setRange(e.target.value)} 
+        className='border border-gray-400 rounded p-1 cursor-pointer'
+    >
+        {/* Option 1: Current Month */}
+        <option value="This Month">
+            {new Date().toLocaleString('default', { month: 'long' })}
+        </option>
 
-                                {ranges.map((r, index) => (
-                                    <option key={index} value={r.value}>
-                                        {r.label}
-                                    </option>
-                                ))}
-                            </select>
+        <option value={new Date().getMonth()}>
+            {new Date(new Date().setMonth(new Date().getMonth() - 1)).toLocaleString('default', { month: 'long' })}
+        </option>
+
+        <option value={new Date().getMonth()-1}>
+            {new Date(new Date().setMonth(new Date().getMonth() - 2)).toLocaleString('default', { month: 'long' })}
+        </option>
+
+        <option value={new Date().getMonth()-2}>
+            {new Date(new Date().setMonth(new Date().getMonth() - 3)).toLocaleString('default', { month: 'long' })}
+        </option>
+    </select>
                         </div>
                         <div className='flex items-center bg-gray-200 py-1 px-5 gap-2 rounded cursor-pointer'>
                             <Filter size={15} color='black' />
@@ -138,19 +136,19 @@ export default function UserRecords() {
                             <li>Actions</li>
                         </ul>
                         <div>
-                        {allRecords?.map((data,index) => (
-                            <ul key={index} className='grid grid-cols-6 m-5'>
-                                <li>{data.date}</li>
-                                <li className={`${data.type === "Income" ? 'bg-green-200 text-green-500' : 'bg-red-200 text-red-500'} w-[60%] rounded px-7 py-1`}>{data.type}</li>
-                                <li>{data.category}</li>
-                                <li className={`${data.type === "Income" ? 'text-green-500' : 'text-red-500'} font-semibold`}>{data.amount}</li>
-                                <li>{data.notes}</li>
-                                <li><button onClick={() => handleRecordDelete(data.id)} className='bg-red-500 ml-5 py-1 px-3 text-white rounded cursor-pointer'>Delete</button></li>
-                            </ul>
-                        ))}
+                            {allRecords?.map((data, index) => (
+                                <ul key={index} className='grid grid-cols-6 m-5'>
+                                    <li>{data.date}</li>
+                                    <li className={`${data.type === "Income" ? 'bg-green-200 text-green-500' : 'bg-red-200 text-red-500'} w-[60%] rounded px-7 py-1`}>{data.type}</li>
+                                    <li>{data.category}</li>
+                                    <li className={`${data.type === "Income" ? 'text-green-500' : 'text-red-500'} font-semibold`}>{data.amount}</li>
+                                    <li>{data.notes}</li>
+                                    <li><button onClick={() => handleRecordDelete(data.id)} className='bg-red-500 ml-5 py-1 px-3 text-white rounded cursor-pointer'>Delete</button></li>
+                                </ul>
+                            ))}
+                        </div>
                     </div>
-                    </div>
-                    
+
                 </div>
             </div>
         </div>
