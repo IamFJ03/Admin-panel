@@ -50,13 +50,9 @@ class RecordController extends Controller
         $record->whereMonth('date', $month)
                ->whereYear('date', $year);
     }
-
-
-    $records = $record->get();
-    return response()->json([
-        "message"=> "Records Fetched",
-        "records"=> $records
-    ]);
+    
+    $records = $record->orderBy('date', 'desc')->paginate(6);
+    return response()->json($records);
    }
 
    public function loadAmount(Request $request){
