@@ -5,7 +5,6 @@ import { ArrowUpRight, Receipt, Landmark, ArrowDownLeft } from 'lucide-react';
 import { PieChart, Pie, Tooltip, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
 export default function AdminDashboard() {
   const [record, setRecord] = useState({});
-  const [transactions, setTransactions] = useState([]);
   const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7c7c", "#8dd1e1"];
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -101,34 +100,55 @@ export default function AdminDashboard() {
                 <Bar dataKey="expense" fill='#FF6384' />
               </BarChart>
             </ResponsiveContainer>
+            <div className='flex items-center ml-10 mt-10 gap-3'>
+              <div className='p-1 w-3 h-3 mt-1 rounded-full' style={{ backgroundColor: '#36A2EB' }}></div>
+              <p className='text-xl'>Income</p>
+            </div>
+            <div className='flex items-center ml-10 mt-5 gap-3'>
+              <div className='p-1 w-3 h-3 mt-1 rounded-full' style={{ backgroundColor: '#FF6384' }}></div>
+              <p className='text-xl'>Expense</p>
+            </div>
           </div>
           <div className='flex flex-col flex-1 gap-5 rounded '>
             <div className='flex-1 rounded shadow-[-2px_3px_10px_rgb(0,0,0,0.5)]'>
               <p className='font-semibold m-3 text-xl'>Category Breakdown</p>
-              <PieChart width={350} height={300}>
+              <div className='flex items-center'>
+                <PieChart width={350} height={300}>
                 <Pie data={data} outerRadius={100} dataKey="value" label>
                   <Tooltip />
                 </Pie>
               </PieChart>
+              <div className='flex flex-col gap-5 ml-10'>
+              {data?.map(item => (
+                <div className='flex items-center gap-3'>
+                  <div className='w-4 h-4 rounded-full' style={{backgroundColor: item.fill}}></div>
+                <p className='text-xl'>
+                  {item.name}
+                </p>
+              </div>
+              ))}
+              </div>
+              </div>
+
             </div>
             <div className='flex-1 rounded shadow-[-2px_3px_10px_rgb(0,0,0,0.5)]'>
-  <p className='font-semibold m-3 text-xl'>Recent Transactions</p>
+              <p className='font-semibold m-3 text-xl'>Recent Transactions</p>
 
-  <div className=' px-3'>
-    {record.transaction && record.transaction.length > 0 ? (
-      record.transaction.map(item => (
-        <div key={item.id} className='flex justify-between border-b py-2'>
-          <span>{item.category}</span>
-          <span className={`${item.type === "Income" ? 'text-green-500' : 'text-red-500'}`}>
-            {item.amount}
-          </span>
-        </div>
-      ))
-    ) : (
-      <p className='text-gray-400'>No transactions found</p>
-    )}
-  </div>
-</div>
+              <div className=' px-3'>
+                {record.transaction && record.transaction.length > 0 ? (
+                  record.transaction.map(item => (
+                    <div key={item.id} className='flex justify-between border-b py-2'>
+                      <span>{item.category}</span>
+                      <span className={`${item.type === "Income" ? 'text-green-500' : 'text-red-500'}`}>
+                        {item.amount}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className='text-gray-400'>No transactions found</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
