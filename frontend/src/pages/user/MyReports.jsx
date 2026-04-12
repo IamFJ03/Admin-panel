@@ -15,8 +15,8 @@ export default function MyRecords() {
     
     const res = await fetch(`http://127.0.0.1:8000/api/filterCategory?category=${encodeURIComponent(category)}&date=${encodeURIComponent(currDate)}`, {
       method: "GET",
+      credentials: 'include',
       headers: {
-        Authorization: `Bearer ${token}`,
         Accept: 'application/json'
       }
     });

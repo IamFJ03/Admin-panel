@@ -1,53 +1,56 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-
+import axios from 'axios';
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const handleSubmit = async () => {
         try {
-            const res = await fetch("http://127.0.0.1:8000/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
+
+            await axios.get("http://localhost:8000/sanctum/csrf-cookie",{
+                withCredentials: true
+            });
+            const res = await axios.post("http://localhost:8000/login",{
+                email, password
+            },{
+                withCredentials: true
             });
 
-            const data = await res.json();
 
-            if (!res.ok) {
-                if (data.errors) {
-                    if (data.errors.email) toast.error(data.errors.email);
-                    else toast.error(data.errors.password);
-                }
-                else {
-                    console.log("Error", data.message);
-                    toast.error(data.message);
-                }
-            }
-            if (data.message === "User Exists") {
-                console.log("Login Successfull", data.user);
-                console.log("Login Successfull", data.token);
-                localStorage.setItem('token', data.token);
+            
+            if (res.data.message === "Login successful") {
+                console.log("Login Successfull", res.data.user);
+                console.log("Login Successfull", res.data.token);
+
                 toast.success("Login Succesfull");
-                
-                    navigate("/admin-dashboard",{
-                    state:{
-                        name: data.user.name,
-                        role: data.user.role
+
+                navigate("/admin-dashboard", {
+                    state: {
+                        name: res.data.user.name,
+                        role: res.data.user.role
                     }
                 });
             }
         } catch (error) {
-            console.error("Error:", error);
+        console.error("Error:", error);
+
+        if (error.response) {
+            const data = error.response.data;
+
+            if (data.errors) {
+                if (data.errors.email) toast.error(data.errors.email[0]);
+                else if (data.errors.password) toast.error(data.errors.password[0]);
+            } else {
+                toast.error(data.message || "Login failed");
+            }
+        } else {
+            toast.error("Server not responding");
         }
+    }
     };
     return (
         <div className='relative flex justify-center items-center w-screen h-screen bg-linear-to-r from-gray-200 to-white'>

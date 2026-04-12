@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecordController;
+use Illuminate\Http\Request;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -12,3 +13,6 @@ Route::middleware('auth:sanctum')->get('/loadRecords', [RecordController::class,
 Route::middleware('auth:sanctum')->get('/loadAmount', [RecordController::class, 'loadAmount']);
 Route::middleware('auth:sanctum')->get('/filterCategory', [RecordController::class, 'filterCategory']);
 Route::middleware('auth:sanctum')->delete('/deleteRecord/{id}', [RecordController::class, 'deleteRecord']);
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});

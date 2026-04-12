@@ -18,10 +18,10 @@ export default function MyRecords() {
         const token = localStorage.getItem('token');
         const res = await fetch("http://127.0.0.1:8000/api/records", {
             method: "POST",
+            credentials: 'include',
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json",
-                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
                 date, type, amount: Number(amount), category, notes

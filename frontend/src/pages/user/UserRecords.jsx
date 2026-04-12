@@ -20,8 +20,8 @@ export default function UserRecords() {
                 `http://127.0.0.1:8000/api/loadRecords?page=${currentPage}&category=${encodeURIComponent(category)}&date=${encodeURIComponent(range)}&types=${encodeURIComponent(allTypes)}`,
                 {
                     method: "GET",
+                    credentials: 'include',
                     headers: {
-                        Authorization: `Bearer ${token}`,
                         Accept: "application/json"
                     }
                 }
@@ -51,8 +51,8 @@ export default function UserRecords() {
 
         const res = await fetch(`http://127.0.0.1:8000/api/deleteRecord/${recordId}`, {
             method: "DELETE",
+            credentials: 'include',
             headers: {
-                Authorization: `Bearer ${token}`,
                 Accept: 'application/json'
             }
         });

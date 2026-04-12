@@ -1,18 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from '../components/sidebar';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUpRight, Receipt, Landmark, ArrowDownLeft } from 'lucide-react';
 import { PieChart, Pie, Tooltip, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
 export default function AdminDashboard() {
   const [record, setRecord] = useState({});
   const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7c7c", "#8dd1e1"];
+  const navigate = useNavigate();
   useEffect(() => {
-    const token = localStorage.getItem("token");
+  const checkAuth = async () => {
+    const res = await fetch("http://localhost:8000/api/user", {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!res.ok) {
+     
+      navigate("/login");
+    }
+  };
+
+  checkAuth();
+}, []);
+  useEffect(() => {
     const loadSpecificData = async () => {
-      const res = await fetch("http://127.0.0.1:8000/api/loadAmount", {
+      const res = await fetch("http://localhost:8000/api/loadAmount", {
         method: "GET",
+        credentials: 'include',
         headers: {
-          Authorization: `Bearer ${token}`,
           Accept: "application/json"
         }
       });
