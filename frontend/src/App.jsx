@@ -9,6 +9,7 @@ import {Toaster} from 'react-hot-toast';
 import Records from './pages/user/AddRecords';
 import Settings from './pages/user/Settings';
 import MyReports from './pages/user/MyReports';
+import AllUser from './pages/admin/AllUser';
 export default function App() {
   return (
     <BrowserRouter>
@@ -22,6 +23,7 @@ export default function App() {
         <Route path='/user/records' element={<UserRecords />} />
         <Route path='/user/setting' element={<Settings />} />
         <Route path='/user/my-reports' element={<MyReports />} />
+        <Route path='/admin/users' element={<AllUser />} />
       </Routes>
     </BrowserRouter>
   )

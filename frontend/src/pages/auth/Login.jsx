@@ -25,13 +25,13 @@ export default function Login() {
             if (res.data.message === "Login successful") {
                 console.log("Login Successfull", res.data.user);
                 console.log("Login Successfull", res.data.token);
-
+                localStorage.setItem("role", res.data.user.role);
                 toast.success("Login Succesfull");
 
                 navigate("/admin-dashboard", {
                     state: {
                         name: res.data.user.name,
-                        role: res.data.user.role
+                        
                     }
                 });
             }

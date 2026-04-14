@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecordController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -16,3 +17,5 @@ Route::middleware('auth:sanctum')->delete('/deleteRecord/{id}', [RecordControlle
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('auth:sanctum')->get('/adminData', [AdminController::class, 'adminData']);

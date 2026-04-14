@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
 import { LayoutDashboard, User, Settings, Wallet, FileText, LogOut, Menu } from 'lucide-react';
 import { useNavigate, NavLink } from 'react-router-dom';
+import axios from 'axios';
 
-export default function Sidebar({ role }) {
+export default function Sidebar() {
+  const storedRole = localStorage.getItem("role");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const handleLogout = async () => {
-    const token = localStorage.getItem('token');
 
-    const res = await fetch("http://127.0.0.1:8000/api/logout", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json"
-      }
+
+    const res = await axios.post("http://localhost:8000/logout", {},{
+      withCredentials: true
     });
 
-    const data = await res.json();
-
-    if (data.message === "Logout Successfull") {
+    if (res.data.message === "Logout Successful") {
       navigate('/login');
     }
   };
@@ -54,20 +50,40 @@ export default function Sidebar({ role }) {
         {/* 🔹 Top Section */}
         <div>
           <p className="text-center text-xl font-semibold my-5">
-            {role === "admin" ? "Admin Panel" : "User Dashboard"}
+            {storedRole === "admin" ? "Admin Panel" : "User Dashboard"}
           </p>
 
           <p className="ml-6 mb-3 text-sm text-gray-300">Platform</p>
 
           <ul className="flex flex-col gap-2 text-sm font-medium">
-            {role === "admin" ? (
+            {storedRole === "admin" ? (
               <>
-                <li className="flex items-center gap-2 px-6 py-2 hover:bg-blue-900 cursor-pointer">
+                
+                  <NavLink
+                  to="/admin-dashboard"
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 px-6 py-2 hover:bg-blue-900 transition ${
+                      isActive ? "bg-blue-900" : ""
+                    }`
+                  }
+                >
                   <LayoutDashboard size={18} /> Dashboard
-                </li>
-                <li className="flex items-center gap-2 px-6 py-2 hover:bg-blue-900 cursor-pointer">
-                  <User size={18} /> Users
-                </li>
+                </NavLink>
+                  
+                
+                  <NavLink
+                  to="/admin/users"
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 px-6 py-2 hover:bg-blue-900 transition ${
+                      isActive ? "bg-blue-900" : ""
+                    }`
+                  }
+                >
+                 <User size={18} />All Users
+                </NavLink>
+                  
                 <li className="flex items-center gap-2 px-6 py-2 hover:bg-blue-900 cursor-pointer">
                   <Wallet size={18} /> Financial Records
                 </li>

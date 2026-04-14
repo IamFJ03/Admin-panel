@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from '../components/sidebar';
+import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUpRight, Receipt, Landmark, ArrowDownLeft } from 'lucide-react';
 import { PieChart, Pie, Tooltip, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
@@ -22,6 +23,7 @@ export default function AdminDashboard() {
 
   checkAuth();
 }, []);
+const role = localStorage.getItem('role');
   useEffect(() => {
     const loadSpecificData = async () => {
       const res = await fetch("http://localhost:8000/api/loadAmount", {
@@ -45,11 +47,23 @@ export default function AdminDashboard() {
       if (data.message === "Data Fetched") {
         console.log(data);
         setRecord(data);
-        setTransactions(data.transaction);
       }
     }
 
-    loadSpecificData();
+    const loadAdminData = async () => {
+      const res = await axios.get('http://localhost:8000/api/adminData',{
+        withCredentials: true
+      });
+
+      if(res.data.message==="Admin Dashboard data"){
+        console.log(res.data.info);
+      }
+    }
+
+    if(role !== 'admin')
+      loadSpecificData();
+    else
+      loadAdminData();
   }, []);
 
   const data = record?.categoryTotal?.map((item, index) => ({
@@ -65,11 +79,11 @@ export default function AdminDashboard() {
   }))
   const location = useLocation();
   const name = location.state?.name;
-  const role = location.state?.role;
+  
   return (
     <div className='flex'>
-      <Sidebar role={role} />
-      <div className='m-5 flex-3 overflow-y-auto max-h-173 shadow-md'>
+      <Sidebar/>
+      <div className='m-5 flex-3 overflow-y-auto max-h-172 shadow-md'>
         <p className='text-xl font-semibold'>Welcome, {name}!</p>
         <p className='border-b border-gray-400 pb-2 mb-2'>Here's your dashboard overview</p>
         <div className='flex gap-5 mt-5 text-white'>
