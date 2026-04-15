@@ -31,7 +31,11 @@ class AdminController extends Controller
         ")
         ->groupBy('category')
         ->get();
-
+        
+        $recentTransactions = Record::latest('date')
+    ->limit(5)
+    ->get();
+        
         return response()->json([
             "message"=> "Admin Dashboard data",
             "AnalyticData"=>$AnalyticData,
@@ -41,7 +45,8 @@ class AdminController extends Controller
                 "balance"=>$balance,
                 "totalRecords"=>$totalRecords
             ],
-            "Category"=>$CategoryFetch
+            "Category"=>$CategoryFetch,
+            "transaction"=>$recentTransactions
         ]);
     }
 }

@@ -180,8 +180,8 @@ export default function AdminDashboard() {
               <p className='font-semibold m-3 text-xl'>Recent Transactions</p>
 
               <div className=' px-3'>
-                {record.transaction && record.transaction.length > 0 ? (
-                  record.transaction.map(item => (
+                {record.transaction ? (
+                  record?.transaction?.map(item => (
                     <div key={item.id} className='flex justify-between border-b py-2'>
                       <span>{item.category}</span>
                       <span className={`${item.type === "Income" ? 'text-green-500' : 'text-red-500'}`}>
@@ -189,8 +189,16 @@ export default function AdminDashboard() {
                       </span>
                     </div>
                   ))
-                ) : (
-                  <p className='text-gray-400'>No transactions found</p>
+                ) : 
+                  (
+                  adminData?.transaction?.map(item => (
+                    <div key={item.id} className='flex justify-between border-b py-2'>
+                      <span>{item.category}</span>
+                      <span className={`${item.type === "Income" ? 'text-green-500' : 'text-red-500'}`}>
+                        {item.amount}
+                      </span>
+                    </div>
+                  ))
                 )}
               </div>
             </div>
