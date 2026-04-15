@@ -15,15 +15,33 @@ class AdminController extends Controller
         ->first();
         $balance = $UserData->income - $UserData->expense;
         $totalRecords = Record::count();
+        
+        $AnalyticData = Record::selectRaw("
+            Month(date) as month,
+            SUM(CASE WHEN type='Income' THEN amount ELSE 0 END) as income,
+            SUM(CASE WHEN type='Expense' THEN amount ELSE 0 END) as expense
+        ")
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get();
+
+        $CategoryFetch = Record::selectRaw("
+        category,
+        Sum(amount) as total
+        ")
+        ->groupBy('category')
+        ->get();
 
         return response()->json([
             "message"=> "Admin Dashboard data",
+            "AnalyticData"=>$AnalyticData,
             "info"=>[
                 "income"=>$UserData->income,
                 "expense"=>$UserData->expense,
                 "balance"=>$balance,
-                "Total Records"=>$totalRecords
-            ]
+                "totalRecords"=>$totalRecords
+            ],
+            "Category"=>$CategoryFetch
         ]);
     }
 }
