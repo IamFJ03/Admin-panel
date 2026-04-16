@@ -24,6 +24,7 @@ export default function AdminDashboard() {
 
     checkAuth();
   }, []);
+  
   const role = localStorage.getItem('role');
   useEffect(() => {
     const loadSpecificData = async () => {
