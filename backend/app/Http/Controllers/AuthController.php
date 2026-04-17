@@ -11,7 +11,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    // ❌ REMOVED: use Illuminate\Support\Facades\Auth; (WRONG as trait)
+ 
 
     public function login(LoginRequest $request)
 {
@@ -24,12 +24,16 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // ✅ VERY IMPORTANT
         $request->session()->regenerate();
+
+        $user = Auth::user();
+        $user->update([
+            'last_seen' => now()
+        ]);
 
         return response()->json([
             "message" => "Login successful",
-            "user" => Auth::user()
+            "user" => $user
         ]);
 
     } catch (\Exception $e) {
@@ -62,6 +66,14 @@ class AuthController extends Controller
 
     public function logout(Request $request)
 {
+    $user = Auth::user(); // ✅ get user BEFORE logout
+
+    if ($user) {
+        $user->update([
+            'last_seen' => now() // ✅ store time
+        ]);
+    }
+
     Auth::guard('web')->logout();
 
     $request->session()->invalidate();

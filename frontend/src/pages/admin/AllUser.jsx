@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../../components/sidebar';
 import { User, Check, UserX, UserPlus } from 'lucide-react';
 import axios from 'axios';
 export default function AllUser() {
+  const [userData, setUserData] = useState([]);
   useEffect(() => {
     const loadUsers = async () => {
-      const res = await axios.get('http://localhost:8000/api/ExistingUsers',{
+      const res = await axios.get('http://localhost:8000/api/ExistingUsers', {
         withCredentials: true
       });
-      if(res.data.message === "All Users fetched"){
+      if (res.data.message === "All Users fetched") {
         console.log(res.data.Users)
+        setUserData(res.data.Users.data)
+
       }
     }
     loadUsers();
@@ -80,8 +83,8 @@ export default function AllUser() {
               </select>
             </div>
           </div>
-          <div className='bg-gray-200 m-5 rounded'>
-            <ul className='grid grid-cols-6 px-5 py-1 text-gray-500'>
+          <div className=''>
+            <ul className='grid grid-cols-6 px-5 py-1 text-gray-500 bg-gray-200 m-5 rounded'>
               <li>USER</li>
               <li>EMAIL</li>
               <li>ROLE</li>
@@ -89,6 +92,24 @@ export default function AllUser() {
               <li>JOINED</li>
               <li>ACTIONS</li>
             </ul>
+            <div>
+              {
+                userData?.map((item, index) => (
+                  <ul className='grid grid-cols-6 px-5 py-1 text-gray-500'>
+                    <li>{item.name}</li>
+                    <li>{item.email}</li>
+                    <li>{item.role}</li>
+                    <li>
+                      {new Date() - new Date(item.last_seen) <= 2 * 24 * 60 * 60 * 1000
+                        ? "Active"
+                        : "Inactive"}
+                    </li>
+                    <li>{new Date(item.created_at).toLocaleDateString()}</li>
+                    <li>ACTIONS</li>
+                  </ul>
+                ))
+              }
+            </div>
           </div>
         </div>
       </div>
