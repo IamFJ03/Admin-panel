@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Record;
+use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -47,6 +48,13 @@ class AdminController extends Controller
             ],
             "Category"=>$CategoryFetch,
             "transaction"=>$recentTransactions
+        ]);
+    }
+    public function AllUsers(Request $request){
+        $AllUsers = User::paginate(5);
+        return response()->json([
+            "message"=>"All Users fetched",
+            "Users"=> $AllUsers
         ]);
     }
 }

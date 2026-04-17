@@ -19,3 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->get('/adminData', [AdminController::class, 'adminData']);
+Route::middleware('auth:sanctum')->get('/ExistingUsers', [AdminController::class, 'AllUsers']);
