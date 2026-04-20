@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Sidebar from '../components/sidebar';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowUpRight, Receipt, Landmark, ArrowDownLeft } from 'lucide-react';
+import UserRecords from '../components/UserRecords';
 import { PieChart, Pie, Tooltip, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
 export default function AdminDashboard() {
   const [record, setRecord] = useState({});
@@ -24,7 +24,7 @@ export default function AdminDashboard() {
 
     checkAuth();
   }, []);
-  
+
   const role = localStorage.getItem('role');
   useEffect(() => {
     const loadSpecificData = async () => {
@@ -74,24 +74,24 @@ export default function AdminDashboard() {
     value: Number(item.total),
     fill: colors[index % colors.length]
   }))
-  :
-  adminData?.Category?.map((item, index) => ({
-    name: item.category,
-    value: Number(item.total),
-    fill: colors[index % colors.length]
-  }))
+    :
+    adminData?.Category?.map((item, index) => ({
+      name: item.category,
+      value: Number(item.total),
+      fill: colors[index % colors.length]
+    }))
 
   const barData = role !== 'admin' ? record?.monthly?.map(item => ({
     name: new Date(2026, item.month - 1).toLocaleString('default', { month: 'short' }),
     income: item.income,
     expense: item.expense
   }))
-  : 
-  adminData?.AnalyticData?.map((item, index) => ({
-    name: new Date(2026, item.month - 1).toLocaleString('default', { month: 'short' }),
-    income: Number(item.income),
-    expense: Number(item.expense)
-  }))
+    :
+    adminData?.AnalyticData?.map((item, index) => ({
+      name: new Date(2026, item.month - 1).toLocaleString('default', { month: 'short' }),
+      income: Number(item.income),
+      expense: Number(item.expense)
+    }))
   const location = useLocation();
   const name = location.state?.name;
 
@@ -101,38 +101,7 @@ export default function AdminDashboard() {
       <div className='m-5 flex-3 overflow-y-auto max-h-172 shadow-md'>
         <p className='text-xl font-semibold'>Welcome, {name}!</p>
         <p className='border-b border-gray-400 pb-2 mb-2'>Here's your dashboard overview</p>
-        <div className='flex gap-5 mt-5 text-white'>
-          <div className='flex items-center gap-5 flex-1 bg-blue-500 rounded p-5 shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer'>
-            <ArrowDownLeft size={35} color='white' />
-            <div>
-              <p>Total Income</p>
-              <p className='text-2xl'>+{role === 'admin' ? adminData?.info?.income : record?.totals?.income}</p>
-            </div>
-          </div>
-          <div className='flex flex-1 gap-5 items-center bg-green-500 rounded p-5 shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer'>
-            <ArrowUpRight size={35} color='white' />
-            <div>
-              <p>Total Expense</p>
-              <p className='text-2xl'>-{role === 'admin' ? adminData?.info?.expense : record?.totals?.expense}</p>
-            </div>
-          </div>
-          <div className=' flex flex-1 gap-5 items-center bg-orange-500 rounded p-5 shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer'>
-            <Landmark size={35} color='white' />
-            <div>
-              <p>Net Balance</p>
-              <p className='text-2xl'>{role === 'admin'
-                ? adminData?.info?.balance
-                : record?.totals?.balance}</p>
-            </div>
-          </div>
-          <div className='flex flex-2 items-center gap-5 bg-purple-500 rounded p-5 shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer'>
-            <Receipt size={35} color='white' />
-            <div>
-              <p>Total Records</p>
-              <p className='text-2xl'>+{role=== 'admin' ? adminData?.info?.totalRecords : record?.totalRecords}</p>
-            </div>
-          </div>
-        </div>
+        <UserRecords />
         <div className='flex gap-5 mt-[5%]'>
           <div className='flex-1 rounded shadow-[-5px_5px_10px_rgb(0,0,0,0.5)]'>
             <p className='font-semibold m-3 text-xl'>Income Vs Expense</p>
@@ -190,17 +159,17 @@ export default function AdminDashboard() {
                       </span>
                     </div>
                   ))
-                ) : 
+                ) :
                   (
-                  adminData?.transaction?.map(item => (
-                    <div key={item.id} className='flex justify-between border-b py-2'>
-                      <span>{item.category}</span>
-                      <span className={`${item.type === "Income" ? 'text-green-500' : 'text-red-500'}`}>
-                        {item.amount}
-                      </span>
-                    </div>
-                  ))
-                )}
+                    adminData?.transaction?.map(item => (
+                      <div key={item.id} className='flex justify-between border-b py-2'>
+                        <span>{item.category}</span>
+                        <span className={`${item.type === "Income" ? 'text-green-500' : 'text-red-500'}`}>
+                          {item.amount}
+                        </span>
+                      </div>
+                    ))
+                  )}
               </div>
             </div>
           </div>

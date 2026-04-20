@@ -83,16 +83,33 @@ export default function Sidebar() {
                 >
                  <User size={18} />All Users
                 </NavLink>
-                  
-                <li className="flex items-center gap-2 px-6 py-2 hover:bg-blue-900 cursor-pointer">
+                  <NavLink
+                  to="/admin/records"
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 px-6 py-2 hover:bg-blue-900 transition ${
+                      isActive ? "bg-blue-900" : ""
+                    }`
+                  }
+                >
                   <Wallet size={18} /> Financial Records
-                </li>
+                </NavLink>
+                
+                
                 <li className="flex items-center gap-2 px-6 py-2 hover:bg-blue-900 cursor-pointer">
                   <FileText size={18} /> Reports
                 </li>
-                <li className="flex items-center gap-2 px-6 py-2 hover:bg-blue-900 cursor-pointer">
+                <NavLink
+                  to="/setting"
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 px-6 py-2 hover:bg-blue-900 transition ${
+                      isActive ? "bg-blue-900" : ""
+                    }`
+                  }
+                >
                   <Settings size={18} /> Settings
-                </li>
+                </NavLink>
               </>
             ) : (
               <>
@@ -115,8 +132,7 @@ export default function Sidebar() {
                     `flex items-center gap-2 px-6 py-2 hover:bg-blue-900 transition ${
                       isActive ? "bg-blue-900" : ""
                     }`
-                  }
-                >
+                  }>
                   <User size={18} /> My Records
                 </NavLink>
 
@@ -145,7 +161,7 @@ export default function Sidebar() {
                 </NavLink>
 
                 <NavLink
-                  to="/user/setting"
+                  to="/setting"
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center gap-2 px-6 py-2 hover:bg-blue-900 transition ${

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../components/sidebar';
-import { User, Check, UserX, UserPlus } from 'lucide-react';
+import { User, Check, UserX, UserPlus, Menu } from 'lucide-react';
 import axios from 'axios';
 export default function AllUser() {
   const [userData, setUserData] = useState([]);
@@ -12,7 +12,7 @@ export default function AllUser() {
       if (res.data.message === "All Users fetched") {
         console.log(res.data.Users)
         setUserData(res.data.Users.data)
-
+        
       }
     }
     loadUsers();
@@ -94,20 +94,26 @@ export default function AllUser() {
             </ul>
             <div>
               {
-                userData?.map((item, index) => (
-                  <ul className='grid grid-cols-6 px-5 py-1 text-gray-500'>
+                userData?.map((item, index) => {
+                  const getActiveness = new Date() - new Date(item.last_seen) <= 2 * 24 * 60 * 60 * 1000;
+                  return (
+                  <ul className='grid grid-cols-6 px-5 py-2 text-gray-500'>
                     <li>{item.name}</li>
                     <li>{item.email}</li>
                     <li>{item.role}</li>
-                    <li>
-                      {new Date() - new Date(item.last_seen) <= 2 * 24 * 60 * 60 * 1000
+                    <li className={`${getActiveness ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'} rounded w-25 px-5 py-1`}>
+                      { getActiveness
                         ? "Active"
-                        : "Inactive"}
+                        : "InActive"}
                     </li>
                     <li>{new Date(item.created_at).toLocaleDateString()}</li>
-                    <li>ACTIONS</li>
+                    <li className='flex gap-5 -ml-10'>
+                      <button className='bg-green-100 text-green-500 py-1 px-5 rounded cursor-pointer'>Promote</button>
+                      <button className='bg-red-100 text-red-500 py-1 px-5 rounded cursor-pointer'>Remove</button>
+                    </li>
                   </ul>
-                ))
+                )
+                })
               }
             </div>
           </div>
