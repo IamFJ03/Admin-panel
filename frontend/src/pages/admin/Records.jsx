@@ -6,7 +6,7 @@ export default function Records() {
     <div className='flex'>
       <Sidebar />
       <div className='shadow-md m-5 flex-3'>
-<UserRecords />
+        <UserRecords />
       </div>
     </div>
   )

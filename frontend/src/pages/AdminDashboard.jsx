@@ -3,11 +3,12 @@ import Sidebar from '../components/sidebar';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import UserRecords from '../components/UserRecords';
+import { useRecord } from '../context/RecordContext';
 import { PieChart, Pie, Tooltip, BarChart, Bar, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
 export default function AdminDashboard() {
   const [record, setRecord] = useState({});
   const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7c7c", "#8dd1e1"];
-  const [adminData, setAdminData] = useState({});
+  const {adminData, setAdminData} = useRecord();
   const navigate = useNavigate();
   useEffect(() => {
     const checkAuth = async () => {
@@ -63,11 +64,12 @@ export default function AdminDashboard() {
       }
     }
 
-    if (role !== 'admin')
-      loadSpecificData();
-    else
+    if (role === 'admin' && !adminData?.info)
       loadAdminData();
-  }, []);
+    else
+      loadSpecificData();
+    
+  }, [adminData]);
 
   const data = role !== 'admin' ? record?.categoryTotal?.map((item, index) => ({
     name: item.category,

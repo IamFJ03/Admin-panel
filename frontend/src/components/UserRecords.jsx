@@ -1,51 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { ArrowUpRight, Receipt, Landmark, ArrowDownLeft } from 'lucide-react';
+import { useRecord } from '../context/RecordContext';
 import axios from 'axios';
 export default function UserRecords() {
-    const [adminData, setAdminData] = useState({});
+    const {adminData, setAdminData, record, setRecord} = useRecord();
+    
     const role = localStorage.getItem('role');
-  useEffect(() => {
-    const loadSpecificData = async () => {
-      const res = await fetch("http://localhost:8000/api/loadAmount", {
-        method: "GET",
-        credentials: 'include',
-        headers: {
-          Accept: "application/json"
-        }
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        if (data.errors) {
-          console.log(data.errors);
-        }
-        else {
-          console.log(data.message);
-        }
-      }
-
-      if (data.message === "Data Fetched") {
-        console.log(data);
-        setRecord(data);
-      }
-    }
-
-    const loadAdminData = async () => {
-      const res = await axios.get('http://localhost:8000/api/adminData', {
-        withCredentials: true
-      });
-
-      if (res.data.message === "Admin Dashboard data") {
-        console.log(res.data);
-        setAdminData(res.data);
-      }
-    }
-
-    if (role !== 'admin')
-      loadSpecificData();
-    else
-      loadAdminData();
-  }, []);
+  
   return (
     <div className='flex gap-5 mt-5 text-white'>
               <div className='flex items-center gap-5 flex-1 bg-blue-500 rounded p-5 shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer'>
