@@ -19,6 +19,15 @@ export default function Records() {
               <button className=''>Filter</button>
             </div>
           </div>
+          <div>
+            <ul className='grid grid-cols-5 bg-gray-100 p-5 font-semibold text-gray-500'>
+              <li>USER</li>
+              <li>TOTAL EARNINGS</li>
+              <li>TOTAL PAID</li>
+              <li>BALANCE</li>
+              <li>LAST PAYMENT DATE</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
