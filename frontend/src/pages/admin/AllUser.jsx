@@ -83,7 +83,7 @@ export default function AllUser() {
               </select>
             </div>
           </div>
-          <div className=''>
+          <div>
             <ul className='grid grid-cols-6 px-5 py-1 text-gray-500 bg-gray-200 m-5 rounded'>
               <li>USER</li>
               <li>EMAIL</li>
