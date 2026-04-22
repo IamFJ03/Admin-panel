@@ -1,8 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../../components/sidebar';
 import UserRecords from '../../components/UserRecords';
 import { Filter, Search } from 'lucide-react';
+import axios from 'axios';
 export default function Records() {
+  const [userRecords, setUserRecords] = useState([]);
+  useEffect(() => {
+    const fetchUserRecords = async () => {
+      try {
+        const res = await axios.get('http://localhost:8000/api/fetchRecords', {
+          withCredentials: true
+        });
+        if (res.data.message === "All Users records Fetched") {
+          console.log(res.data.records);
+          setUserRecords(res.data.records.data);
+        }
+      }
+      catch (error) {
+        if (error.response.data) {
+          console.log(error.response.data.message);
+        }
+      }
+    }
+
+    fetchUserRecords();
+  }, [])
   return (
     <div className='flex'>
       <Sidebar />
@@ -12,7 +34,7 @@ export default function Records() {
           <div className='flex items-center gap-10 m-5 py-5'>
             <div className='flex items-center border border-gray-400 px-2 rounded gap-3'>
               <Search size={15} color='black' />
-              <input type='text' placeholder='Search by name or email...' className='w-72 py-1 px-2 rounded focus:outline-none ' />
+              <input type='text' placeholder='Search User...' className='w-72 py-1 px-2 rounded focus:outline-none ' />
             </div>
             <div className='flex items-center border border-gray-400 gap-2 cursor-pointer py-1 px-2 rounded'>
               <Filter size={15} color='black' />
@@ -27,6 +49,15 @@ export default function Records() {
               <li>BALANCE</li>
               <li>LAST PAYMENT DATE</li>
             </ul>
+            {userRecords?.map((item, index) => (
+              <ul className='grid grid-cols-5 p-5'>
+                <li>{item.username}</li>
+                <li>{item.income}</li>
+                <li>{item.expense}</li>
+                <li>-</li>
+                <li>{item.last_payment}</li>
+              </ul>
+            ))}
           </div>
         </div>
       </div>

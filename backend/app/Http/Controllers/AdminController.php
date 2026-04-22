@@ -57,4 +57,22 @@ class AdminController extends Controller
             "Users"=> $AllUsers
         ]);
     }
+
+    public function fetchRecords(Request $request){
+        $records = Record::join('users', 'records.user_id', '=', 'users.id')
+    ->selectRaw("
+        users.id,
+        users.name as username,
+        MAX(records.date) as last_payment,
+        SUM(CASE WHEN records.type = 'income' THEN records.amount ELSE 0 END) as income,
+        SUM(CASE WHEN records.type = 'expense' THEN records.amount ELSE 0 END) as expense
+    ")
+    ->groupBy('users.id', 'users.name')
+    ->paginate(5);
+
+        return response()->json([
+            "message"=>"All Users records Fetched",
+            "records"=>$records
+        ]);
+    }
 }
