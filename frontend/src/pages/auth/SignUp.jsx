@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast';
-
+import axios from 'axios';
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
 export default function SignUp() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -14,41 +16,29 @@ export default function SignUp() {
                 toast.error("password must match")
                 return;
             }
-            const res = await fetch("http://127.0.0.1:8000/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password
-                })
+             await axios.get("http://localhost:8000/sanctum/csrf-cookie",{
+                withCredentials: true
             });
-
-            const data = await res.json();
-            if (!res.ok) {
-                if (data.errors) {
-                    if (data.errors.name) toast.error(data.errors.name);
-                    else if (data.errors.email) toast.error(data.errors.email);
-                    else toast.error(data.errors.password);
-                    return;
-                }
-                else {
-                    console.log("Error", data.message);
-                    toast.error(data.message);
-                }
+            const res = await axios.post("http://localhost:8000/api/register", {
+                name, email, password
+            }, {
+                withCredentials: true
+            })
+            if (res.data.message === "Registered Successfully") {
+                console.log("data", res.data.data);
+                toast.success(res.data.message);
+                setName("");
+                setEmail("");
+                setPassword("");
+                setCnfPassword("");
             }
-            console.log("data", data);
-            toast.success(data.message);
-            setName("");
-            setEmail("");
-            setPassword("");
-            setCnfPassword("");
         }
         catch (e) {
-            console.log("Error", e);
+            if (e.response.data) {
+                const error = e.response.data.message;
+                console.log("Error", error);
+                toast.error(error);
+            }
         }
     }
     return (

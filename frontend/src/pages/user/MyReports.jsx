@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Sidebar from '../../components/sidebar';
 import { PieChart, Pie, CartesianGrid, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import { motion } from "framer-motion";
-
+import axios from 'axios';
 export default function MyRecords() {
   const [currDate, setCurrDate] = useState("This Month");
   const [category, setCategory] = useState("All");
@@ -11,33 +11,36 @@ export default function MyRecords() {
   const [currentMonth, setCurrentMonth] = useState({});
 
   const filterCategory = async () => {
-    const token = localStorage.getItem('token');
-    
-    const res = await fetch(`http://127.0.0.1:8000/api/filterCategory?category=${encodeURIComponent(category)}&date=${encodeURIComponent(currDate)}`, {
-      method: "GET",
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json'
+  try {
+    const res = await axios.get(
+      `http://localhost:8000/api/filterCategory`,
+      {
+        params: {
+          category,
+          date: currDate,
+        },
+        withCredentials: true,
+        headers: {
+          Accept: "application/json",
+        },
       }
-    });
+    );
 
-    const data = await res.json();
-    if (!res.ok) {
-      if (data.errors) {
-        console.log(data.errors);
-      }
-      else {
-        console.log(data.message);
-      }
+    if (res.data.message === "Category Data Fetched") {
+      console.log(res.data);
+
+      setCategoryData(res.data.categoryData);
+      setCategoryTotal(res.data.categoryTotal);
+      setCurrentMonth(res.data.currentMonth);
     }
-
-    if (data.message === "Category Data Fetched") {
-      console.log(data);
-      setCategoryData(data.categoryData);
-      setCategoryTotal(data.categoryTotal);
-      setCurrentMonth(data.currentMonth);
+  } catch (e) {
+    if (e.response?.data?.errors) {
+      console.log(e.response.data.errors);
+    } else {
+      console.log(e.response?.data?.message);
     }
   }
+};
 
   useEffect(() => {
     filterCategory();

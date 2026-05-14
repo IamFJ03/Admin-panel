@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Sidebar from '../../components/sidebar'
 import { Search, Filter } from 'lucide-react';
 import toast from 'react-hot-toast';
-
+import axios from 'axios';
 export default function UserRecords() {
     const [category, setCategory] = useState("");
     const [allTypes, setAllTypes] = useState("");
@@ -14,30 +14,36 @@ export default function UserRecords() {
 
     useEffect(() => {
         const loadRecords = async () => {
-            const token = localStorage.getItem("token");
-
-            const res = await fetch(
-                `http://127.0.0.1:8000/api/loadRecords?page=${currentPage}&category=${encodeURIComponent(category)}&date=${encodeURIComponent(range)}&types=${encodeURIComponent(allTypes)}`,
-                {
-                    method: "GET",
-                    credentials: 'include',
-                    headers: {
-                        Accept: "application/json"
+            try {
+                const res = await axios.get(
+                    "http://localhost:8000/api/loadRecords",
+                    {
+                        params: {
+                            page: currentPage,
+                            category,
+                            date: range,
+                            types: allTypes,
+                        },
+                        withCredentials: true,
+                        headers: {
+                            Accept: "application/json",
+                        },
                     }
-                }
-            );
+                );
 
-            const data = await res.json();
+                console.log(res.data.data);
 
-            if (!res.ok) {
-                console.log(data.errors || data.message);
-                return;
+                setAllRecords(res.data.data);
+                setCurrentPage(res.data.current_page);
+                setLastPage(res.data.last_page);
+
+            } catch (e) {
+                console.log(
+                    e.response?.data?.errors ||
+                    e.response?.data?.message
+                );
             }
-            console.log(data.data);
-            setAllRecords(data.data);
-            setCurrentPage(data.current_page);
-            setLastPage(data.last_page);
-        }
+        };
 
         loadRecords();
 
@@ -47,29 +53,30 @@ export default function UserRecords() {
     }, [range, category, allTypes]);
 
     const handleRecordDelete = async (recordId) => {
-        const token = localStorage.getItem('token');
+        try {
+            const res = await axios.delete(
+                `http://127.0.0.1:8000/api/deleteRecord/${recordId}`,
+                {
+                    withCredentials: true,
+                    headers: {
+                        Accept: "application/json",
+                    },
+                }
+            );
 
-        const res = await fetch(`http://127.0.0.1:8000/api/deleteRecord/${recordId}`, {
-            method: "DELETE",
-            credentials: 'include',
-            headers: {
-                Accept: 'application/json'
+            if (res.data.message === "Deleted successfully") {
+                setAllRecords((prev) =>
+                    prev.filter((item) => item.id !== recordId)
+                );
             }
-        });
 
-        const data = await res.json();
-
-        if (!res.ok) {
-            console.log(data.errors || data.message);
-            return;
+        } catch (e) {
+            console.log(
+                e.response?.data?.errors ||
+                e.response?.data?.message
+            );
         }
-
-        if (data.message === "Deleted successfully") {
-            setAllRecords((prev) =>
-                prev.filter(item => item.id !== recordId)
-            )
-        }
-    }
+    };
 
     return (
         <div>
@@ -77,7 +84,7 @@ export default function UserRecords() {
                 <Sidebar />
 
                 <div className='flex-3 w-full m-5 rounded shadow-md flex flex-col'>
-                    
+
                     {/* Header */}
                     <div className='p-5'>
                         <p className='text-xl font-semibold'>My Records</p>
@@ -86,7 +93,7 @@ export default function UserRecords() {
 
                     {/* Filters */}
                     <div className='flex justify-between mx-5 p-3 rounded shadow-md'>
-                        
+
                         <div className='flex gap-3 items-center rounded bg-gray-200 p-1'>
                             <Search size={15} />
                             <input type='text' placeholder='Search records' className='focus:outline-none bg-transparent' />

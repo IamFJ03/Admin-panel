@@ -12,16 +12,20 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   useEffect(() => {
     const checkAuth = async () => {
-      const res = await fetch("http://localhost:8000/api/user", {
-        method: "GET",
-        credentials: "include"
-      });
+    try {
+        const res = await axios.get(
+            "http://localhost:8000/api/user",
+            {
+                withCredentials: true,
+            }
+        );
 
-      if (!res.ok) {
+        console.log(res.data);
 
+    } catch (e) {
         navigate("/login");
-      }
-    };
+    }
+};
 
     checkAuth();
   }, []);
@@ -29,29 +33,31 @@ export default function AdminDashboard() {
   const role = localStorage.getItem('role');
   useEffect(() => {
     const loadSpecificData = async () => {
-      const res = await fetch("http://localhost:8000/api/loadAmount", {
-        method: "GET",
-        credentials: 'include',
-        headers: {
-          Accept: "application/json"
-        }
-      });
+    try {
+        const res = await axios.get(
+            "http://localhost:8000/api/loadAmount",
+            {
+                withCredentials: true,
+                headers: {
+                    Accept: "application/json",
+                },
+            }
+        );
 
-      const data = await res.json();
-      if (!res.ok) {
-        if (data.errors) {
-          console.log(data.errors);
-        }
-        else {
-          console.log(data.message);
-        }
-      }
+        if (res.data.message === "Data Fetched") {
+            console.log(res.data);
 
-      if (data.message === "Data Fetched") {
-        console.log(data);
-        setRecord(data);
-      }
+            setRecord(res.data);
+        }
+
+    } catch (e) {
+        if (e.response?.data?.errors) {
+            console.log(e.response.data.errors);
+        } else {
+            console.log(e.response?.data?.message);
+        }
     }
+};
 
     const loadAdminData = async () => {
       const res = await axios.get('http://localhost:8000/api/adminData', {

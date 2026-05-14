@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import Sidebar from '../../components/sidebar'
 import Records from '../../assets/records_image.png';
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
+import axios from 'axios';
+
 export default function MyRecords() {
     const [category, setCategory] = useState("");
     const [date, setDate] = useState("");
@@ -9,40 +11,62 @@ export default function MyRecords() {
     const [notes, setNotes] = useState("");
     const [type, setType] = useState("");
     const handleAddRecord = async () => {
+    try {
         console.log("Sending:", { category, type, date, amount, notes });
-        if (category === "" || type === "" || date === "" || amount === "" || notes === "") {
+
+        if (
+            category === "" ||
+            type === "" ||
+            date === "" ||
+            amount === "" ||
+            notes === ""
+        ) {
             toast.error("All Fields are required");
             return;
         }
-        toast.success(date);
-        const token = localStorage.getItem('token');
-        const res = await fetch("http://127.0.0.1:8000/api/records", {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            body: JSON.stringify({
-                date, type, amount: Number(amount), category, notes
-            })
+
+        // Get CSRF cookie first
+        await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
+            withCredentials: true,
         });
 
-        const data = await res.json();
+        const res = await axios.post(
+            "http://localhost:8000/api/records",
+            {
+                date,
+                type,
+                amount: Number(amount),
+                category,
+                notes,
+            },
+            {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+            }
+        );
 
-        if (!res.ok) {
-            console.log("Error", data.message);
-        }
-        if (data.message === "Record stored") {
-            console.log(data.user);
-            toast.success("Record inserted Succesfully")
+        if (res.data.message === "Record stored") {
+            console.log(res.data.user);
+
+            toast.success("Record inserted Successfully");
+
             setAmount("");
             setType("");
             setCategory("");
             setDate("");
             setNotes("");
         }
+    } catch (e) {
+        console.log("Error", e.response?.data);
+
+        toast.error(
+            e.response?.data?.message || "Something went wrong"
+        );
     }
+};
     const handleClear = () => {
         setAmount("");
         setType("");

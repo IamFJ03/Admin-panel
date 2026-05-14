@@ -12,7 +12,7 @@ export default function Records() {
           withCredentials: true
         });
         if (res.data.message === "All Users records Fetched") {
-          console.log(res.data.records);
+          console.log(res.data.records); 
           setUserRecords(res.data.records.data);
         }
       }
