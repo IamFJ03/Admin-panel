@@ -96,9 +96,17 @@ export default function Sidebar() {
                 </NavLink>
                 
                 
-                <li className="flex items-center gap-2 px-6 py-2 hover:bg-blue-900 cursor-pointer">
+                <NavLink
+                  to="/admin/reports"
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 px-6 py-2 hover:bg-blue-900 transition ${
+                      isActive ? "bg-blue-900" : ""
+                    }`
+                  }
+                >
                   <FileText size={18} /> Reports
-                </li>
+                </NavLink>
                 <NavLink
                   to="/setting"
                   onClick={() => setOpen(false)}

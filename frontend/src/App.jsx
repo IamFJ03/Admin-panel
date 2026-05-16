@@ -12,6 +12,7 @@ import MyReports from './pages/user/MyReports';
 import AllUser from './pages/admin/AllUser';
 import AdminRecords from './pages/admin/Records';
 import RecordContext from './context/RecordContext';
+import Reports from './pages/admin/Reports';
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
           <Route path='/user/my-reports' element={<MyReports />} />
           <Route path='/admin/users' element={<AllUser />} />
           <Route path='/admin/records' element={<AdminRecords />} />
+          <Route path='/admin/reports' element={<Reports />} />
         </Routes>
       </RecordContext>
     </BrowserRouter>
